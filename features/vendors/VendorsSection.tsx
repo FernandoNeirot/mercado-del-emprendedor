@@ -17,7 +17,7 @@ const defaultVendors: Vendor[] = [
     location: "Quilmes",
     category: "PASTELERÍA",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAu-mCavUUP7EsldU9ju-IDMj9oYvzv6NJ8XNcgsh9miM0AJFyT0yY-j7WkfVILrl6DP8nscbFaQmWSKtiYLzhysXv8noyBxneHONZ8I6-hnS9wdJK9QuOTYpYf7AAbveNIsi81aXXGtnVWOrxLeliQEhgVpdVdGpXEsPevExGeYmxHy3WNTgaST_XWR-_SNEKfvIJWACSaDAcl4u0KX9zwTxbaBfTntIB1zdwsah70N5Uyx5nZFUUSyE9JIWNNuwakcPpKLmFTp6YJ",
+      "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/panaderia.webp?alt=media&token=9bce9e33-457a-4177-82a5-ac0709c92832",
   },
   {
     id: "2",
@@ -25,7 +25,7 @@ const defaultVendors: Vendor[] = [
     location: "Avellaneda",
     category: "TEXTILES",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCZkcSPhFE_qjZfWMSCIaaz3xxtxzR--jgnYKZFrPhwV89zuHnCdevga4OOiti-3ye3dusDD67KX9wJWMc4yUwUFHmVQSRzrxxdJUdX92FN5uGyj9msKCNbhyu721XiHkq1_lPi_KsYtqAt2X6gAvH9Yss0V-URDMeHBI0JRAywcNMGtrIrqTupec_1wIJBs47ROo6DvVA__qHu-QfGRaa0QiUus3MlwrUMfCBbixjgMjSwQV8R7AOlemMiiU6IqyqhJvknsOMjf9Lh",
+      "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/ropa.webp?alt=media&token=d6f729ce-6b95-4eb7-958c-457d64cb65cf",
   },
   {
     id: "3",
@@ -33,7 +33,7 @@ const defaultVendors: Vendor[] = [
     location: "Bernal",
     category: "INDUMENTARIA",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCrchIHaXhheTO9htRxGhq7jsLhhMLutL1o7Ad7hRnx5Q2GJzk5nTqthsdraAyqBMP-LUC3vVtBH9QWiNLAHrZ3_mPu0joXgwSiQYvSXjSQPU-4IqDZl6h0s1PDhfmpfyhSEEXeTD-YbehEUAgW3Gfefpzq8JnxutJ5kCZ0hzOJBCFqROc-qMK5fFFF3yuKpQVdSQcaH94wSsFG0NOTO6fxI5Uw9O8LmTbqfXCqyRM4LZhBFUEv89e4lLaXliHjtsZgAkQhwevJ_NOw",
+      "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/taller.webp?alt=media&token=2576fa08-53e6-4684-bf6d-76efdbe2628b",
   },
   {
     id: "4",
@@ -41,7 +41,7 @@ const defaultVendors: Vendor[] = [
     location: "Avellaneda",
     category: "SERVICIOS",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCmJ2f102w-eqG0Z6zvO6gxWlNe9Md9-H6Rjg_fdN4IidoWzezYo5zfgYuxUz31FeCvOb_AkfSpW8W3CiM2uFn5YDXzOFnlwPw2o1cgW7GA1MBFqYdYm8z-js0TYC_LICeI73tVLyG5vlD_mfTQBKz04y93ZRiHZttWqK_LrPSsje2-pmkt0otsg0g6eN_adPnzVS60ckQsOq5N1uJjhL64RVWZ5yf1YyUBAUAHRTReDIS8o_Mni-oEJoCBacrSmuUr9XK6g-vPfHWr",
+      "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/costura.webp?alt=media&token=a53701ff-6f22-475d-b049-d04e753a91cc",
   },
 ];
 
