@@ -61,7 +61,7 @@ export function VendorsSection({
           {totalCount} DISPONIBLES
         </span>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 min-[480px]:grid-cols-2 min-[770px]:grid-cols-3 min-[1000px]:grid-cols-4 gap-4 md:gap-6">
         {vendors.map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} onContact={onContact} />
         ))}

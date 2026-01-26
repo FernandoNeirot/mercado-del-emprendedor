@@ -20,6 +20,7 @@ export function VendorCard({ vendor, onContact }: VendorCardProps) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-[24px] md:rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm md:hover:shadow-md transition-shadow flex flex-col group">
       <div className="aspect-[4/5] md:h-64 relative">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt={vendor.name}
           className="w-full h-full object-cover"
