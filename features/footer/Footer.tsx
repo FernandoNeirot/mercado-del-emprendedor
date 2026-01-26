@@ -2,19 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { Icon } from "@/shared/components/Icon";
+import { useTheme } from "@/shared/providers/ThemeProvider";
 
 export function Footer() {
-  const [isDark, setIsDark] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const darkMode = document.documentElement.classList.contains("dark");
-    setIsDark(darkMode);
+    setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle("dark");
-    setIsDark(!isDark);
-  };
+  const isDark = theme === "dark";
 
   return (
     <footer className="hidden md:block bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8">
@@ -103,8 +101,11 @@ export function Footer() {
             <button
               onClick={toggleTheme}
               className="flex items-center gap-2 hover:text-primary transition-colors"
+              suppressHydrationWarning
             >
-              <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-base" />
+              {mounted && (
+                <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-base" />
+              )}
               <span>Cambiar Modo</span>
             </button>
           </div>
