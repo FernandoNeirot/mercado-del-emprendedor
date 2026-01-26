@@ -1,13 +1,17 @@
+"use client";
+
 import React from "react";
 import { PromotionCard } from "./components/PromotionCard";
+import { Icon } from "@/shared/components/Icon";
 
 interface Promotion {
   id: string;
+  badge: string;
   title: string;
   description: string;
   buttonText: string;
   icon: string;
-  bgColor: "primary" | "accent-green";
+  bgColor: "amber" | "emerald" | "blue" | "purple";
 }
 
 interface PromotionsSectionProps {
@@ -17,19 +21,39 @@ interface PromotionsSectionProps {
 const defaultPromotions: Promotion[] = [
   {
     id: "1",
-    title: "20% OFF en Regalos",
-    description: "Aplica a todo Artesanías",
-    buttonText: "Ver más",
-    icon: "featured_seasonal_and_gifts",
-    bgColor: "primary",
+    badge: "Solo por hoy",
+    title: "20% OFF en Cerámica",
+    description: "En el catálogo de Taller Mara",
+    buttonText: "VER AHORA",
+    icon: "local_mall",
+    bgColor: "amber",
   },
   {
     id: "2",
-    title: "Envío Gratis Hoy",
-    description: "En zona Quilmes y Bernal",
-    buttonText: "Aprovechar",
+    badge: "Nuevo",
+    title: "Kit de Masa Madre",
+    description: "Lanzamiento exclusivo",
+    buttonText: "DESCUBRIR",
+    icon: "bakery_dining",
+    bgColor: "emerald",
+  },
+  {
+    id: "3",
+    badge: "Envíos Gratis",
+    title: "Textiles del Sur",
+    description: "En toda la zona de Avellaneda",
+    buttonText: "VER TIENDA",
     icon: "local_shipping",
-    bgColor: "accent-green",
+    bgColor: "blue",
+  },
+  {
+    id: "4",
+    badge: "Especial",
+    title: "Talleres de Bordado",
+    description: "Cupos limitados para Junio",
+    buttonText: "RESERVAR",
+    icon: "stylus_laser_pointer",
+    bgColor: "purple",
   },
 ];
 
@@ -37,18 +61,23 @@ export function PromotionsSection({
   promotions = defaultPromotions,
 }: PromotionsSectionProps) {
   return (
-    <section className="mb-12 md:mb-12 py-6 md:py-8 overflow-hidden">
-      <div className="px-5 md:px-0 mb-4 md:mb-6 flex items-center justify-between">
-        <h2 className="text-sm md:text-sm font-black md:font-bold uppercase tracking-widest md:tracking-[0.15em] text-slate-400">
-          Promociones Flash
+    <section>
+      <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+        <h2 className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-1.5 sm:gap-2">
+          <Icon name="bolt" className="text-amber-500 text-base sm:text-lg md:text-xl" />
+          <span className="hidden sm:inline">Promociones Flash</span>
+          <span className="sm:hidden">Promociones</span>
         </h2>
-        <div className="flex gap-1 md:gap-2">
-          <div className="size-1 md:w-2 md:h-2 rounded-full bg-primary"></div>
-          <div className="size-1 md:w-2 md:h-2 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-          <div className="size-1 md:w-2 md:h-2 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+        <div className="hidden md:flex gap-2">
+          <button className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <Icon name="chevron_left" className="text-sm" />
+          </button>
+          <button className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <Icon name="chevron_right" className="text-sm" />
+          </button>
         </div>
       </div>
-      <div className="flex md:grid md:grid-cols-2 overflow-x-auto no-scrollbar gap-4 md:gap-6 px-5 md:px-0">
+      <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0">
         {promotions.map((promotion) => (
           <PromotionCard key={promotion.id} {...promotion} />
         ))}

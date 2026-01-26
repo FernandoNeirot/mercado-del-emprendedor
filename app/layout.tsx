@@ -48,6 +48,7 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} font-sans antialiased bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 transition-colors duration-200`}
         suppressHydrationWarning
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         <ThemeProvider>
           {children}
