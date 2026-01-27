@@ -47,7 +47,7 @@ export function FeaturedProducts({
 }: FeaturedProductsProps) {
   return (
     <section>
-      <div className="flex flex-col sm:flex-row mt-8 items-start sm:items-center justify-between mb-6 md:mb-8 gap-3">
+      <div className="flex sm:flex-row mt-8 items-start sm:items-center justify-between mb-6 md:mb-8 gap-3">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Productos Destacados</h2>
           <p className="text-sm md:text-base text-slate-500 dark:text-slate-400">
@@ -55,7 +55,7 @@ export function FeaturedProducts({
           </p>
         </div>
         <button className="text-primary dark:text-secondary font-bold text-xs md:text-sm hover:underline uppercase tracking-wider whitespace-nowrap">
-          Ver todos
+          Ver más
         </button>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
