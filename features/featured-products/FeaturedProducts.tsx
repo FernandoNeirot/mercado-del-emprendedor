@@ -54,7 +54,7 @@ export function FeaturedProducts({
             Seleccionados por su calidad y originalidad
           </p>
         </div>
-        <button className="text-primary dark:text-slate-200 font-bold text-xs md:text-sm hover:underline uppercase tracking-wider whitespace-nowrap">
+        <button className="text-primary dark:text-secondary font-bold text-xs md:text-sm hover:underline uppercase tracking-wider whitespace-nowrap">
           Ver todos
         </button>
       </div>

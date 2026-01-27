@@ -16,11 +16,7 @@ interface ProductCardProps {
   onFavorite?: (productId: string) => void;
 }
 
-export function ProductCard({
-  product,
-  onView,
-  onFavorite,
-}: ProductCardProps) {
+export function ProductCard({ product, onView, onFavorite }: ProductCardProps) {
   return (
     <div className="bg-gray-50 dark:bg-slate-800 rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 group flex flex-col hover:shadow-lg transition-shadow">
       <div className="relative h-40 md:h-56 overflow-hidden">
@@ -32,9 +28,12 @@ export function ProductCard({
         />
         <button
           onClick={() => onFavorite?.(product.id)}
-          className="absolute top-2 right-2 md:top-3 md:right-3 bg-white/90 backdrop-blur p-1.5 md:p-2 rounded-full shadow-sm text-slate-400 hover:text-red-500 transition-colors"
+          className="absolute top-2 right-2 md:top-3 md:right-3 "
         >
-          <Icon name="favorite" className="text-base md:text-[20px]" />
+          <Icon
+            name="favorite"
+            className="text-base md:text-[20px] bg-white/90 backdrop-blur p-1.5 md:p-2 rounded-full shadow-sm text-slate-400 hover:text-red-500 transition-colors"
+          />
         </button>
       </div>
       <div className="p-3 md:p-5 flex flex-col flex-1">
