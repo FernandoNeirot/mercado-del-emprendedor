@@ -1,23 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { Icon } from "@/shared/components/Icon";
-import { useTheme } from "@/shared/providers/ThemeProvider";
 
 export function Footer() {
-  const { theme, toggleTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
-  const isDark = theme === "dark";
-
   return (
     <footer className="md:block bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-16 pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto mb-10 px-4 md:mb-0 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           <div className="md:col-span-4">
             <div className="flex items-center gap-3 mb-6">
@@ -90,17 +78,7 @@ export function Footer() {
         </div>
         <div className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
           <p>© 2024 Mercado del Emprendedor. Hecho con ❤️ para la comunidad de artesanos.</p>
-          <div className="flex gap-6">
-            <button
-              onClick={toggleTheme}
-              className="flex items-center gap-2 hover:text-primary transition-colors"
-              suppressHydrationWarning
-            >
-              {mounted && (
-                <Icon name={isDark ? "light_mode" : "dark_mode"} className="text-base" />
-              )}
-              <span>Cambiar Modo</span>
-            </button>
+          <div className="flex gap-6">            
             <a className="hover:text-primary transition-colors" href="#">
               Términos
             </a>
