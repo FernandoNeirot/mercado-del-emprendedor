@@ -24,7 +24,7 @@ export function VendorCardLarge({
   onContact,
 }: VendorCardLargeProps) {
   return (
-    <div className="bg-card-light dark:bg-card-dark rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 dark:border-slate-800 p-3">
+    <div className="bg-gray-50 dark:bg-card-dark rounded-2xl md:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all group border border-slate-100 dark:border-slate-800 p-3">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         <div className="md:w-2/5 h-48 md:h-auto overflow-hidden rounded-xl md:rounded-2xl">
           {/* eslint-disable-next-line @next/next/no-img-element */}

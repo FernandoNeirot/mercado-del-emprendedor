@@ -91,7 +91,7 @@ export function Header({ onSearch }: HeaderProps) {
               <div className="relative w-full">
                 <Icon
                   name="search"
-                  className="absolute inset-y-0 left-0 pl-3 lg:pl-4 flex items-center pointer-events-none text-slate-400 text-lg lg:text-xl"
+                  className="absolute mt-2 inset-y-0 left-0 pl-3 lg:pl-4 flex items-center pointer-events-none text-slate-400 text-lg lg:text-xl"
                 />
                 <input
                   type="text"
@@ -103,25 +103,25 @@ export function Header({ onSearch }: HeaderProps) {
             </div>
             <nav className="hidden xl:flex items-center gap-4 lg:gap-6 mr-2 lg:mr-4 shrink-0">
               <a
-                className="text-[10px] lg:text-xs font-bold uppercase tracking-wider text-primary dark:text-emerald-400 whitespace-nowrap"
-                href="#"
-              >
-                Explorar
-              </a>
-              <a
                 className="text-[10px] lg:text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap"
                 href="#"
               >
                 Categorías
               </a>
-              <a
-                className="text-[10px] lg:text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap"
-                href="#"
-              >
-                Contacto
-              </a>
             </nav>
             <div className="flex items-center gap-0.5 lg:gap-1 shrink-0">
+              <button
+              onClick={toggleTheme}
+              className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+              suppressHydrationWarning
+            >
+              {mounted && (
+                <Icon
+                  name={isDark ? "light_mode" : "dark_mode"}
+                  className="text-base"
+                />
+              )}
+            </button>
               <button
                 className="p-2 lg:p-2.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                 title="Favoritos"

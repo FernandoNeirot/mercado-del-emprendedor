@@ -22,7 +22,7 @@ export function ProductCard({
   onFavorite,
 }: ProductCardProps) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 group flex flex-col hover:shadow-lg transition-shadow">
+    <div className="bg-gray-50 dark:bg-slate-800 rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 group flex flex-col hover:shadow-lg transition-shadow">
       <div className="relative h-40 md:h-56 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

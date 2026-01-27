@@ -55,7 +55,7 @@ export function PromotionCard({
 
   return (
     <div
-      className={`min-w-[240px] sm:min-w-[260px] md:min-w-[280px] ${colors.bg} p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl md:rounded-3xl border ${colors.border} relative overflow-hidden group`}
+      className={`min-w-60 sm:min-w-[260px] md:min-w-[280px] ${colors.bg} p-3 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl md:rounded-3xl border ${colors.border} relative overflow-hidden group`}
     >
       <div className="relative z-10">
         <span className={`${colors.badge} text-white text-[10px] font-bold px-2 py-1 rounded mb-4 inline-block uppercase`}>

@@ -62,20 +62,20 @@ export function PromotionsSection({
 }: PromotionsSectionProps) {
   return (
     <section>
-      <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
+      <div className="flex items-center justify-between mb-3 mt-5 sm:mb-4 md:mb-6">
         <h2 className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-1.5 sm:gap-2">
           <Icon name="bolt" className="text-amber-500 text-base sm:text-lg md:text-xl" />
           <span className="hidden sm:inline">Promociones Flash</span>
           <span className="sm:hidden">Promociones</span>
         </h2>
-        <div className="hidden md:flex gap-2">
+        {/* <div className="hidden md:flex gap-2">
           <button className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
             <Icon name="chevron_left" className="text-sm" />
           </button>
           <button className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
             <Icon name="chevron_right" className="text-sm" />
           </button>
-        </div>
+        </div> */}
       </div>
       <div className="flex gap-4 md:gap-6 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0">
         {promotions.map((promotion) => (
