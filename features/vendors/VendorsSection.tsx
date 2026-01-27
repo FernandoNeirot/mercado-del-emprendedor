@@ -43,7 +43,7 @@ export function VendorsSection({
 }: VendorsSectionProps) {
   return (
     <section>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-2">
+      <div className="flex flex-col mt-8 sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-2">
         <h2 className="text-xl md:text-2xl font-bold">Descubrí Talentos Locales</h2>
         <span className="text-[10px] md:text-xs font-bold tracking-widest text-slate-400 uppercase">
           {totalCount} EMPRENDEDORES ACTIVOS

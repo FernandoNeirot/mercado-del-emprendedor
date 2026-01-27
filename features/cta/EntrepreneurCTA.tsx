@@ -12,7 +12,7 @@ export function EntrepreneurCTA({
   onLearnMore,
 }: EntrepreneurCTAProps) {
   return (
-    <section className="relative overflow-hidden rounded-2xl md:rounded-[3rem] bg-primary p-6 md:p-12 lg:p-20 text-center md:text-left mb-8">
+    <section className="relative overflow-hidden mt-8 rounded-2xl md:rounded-[3rem] bg-primary p-6 md:p-12 lg:p-20 text-center md:text-left mb-8">
       <div className="relative z-10 md:max-w-2xl">
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
           ¿Sos emprendedor?

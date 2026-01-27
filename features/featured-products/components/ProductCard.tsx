@@ -47,9 +47,10 @@ export function ProductCard({
         <div className="mt-auto">
           <button
             onClick={() => onView?.(product.id)}
-            className="w-full bg-primary dark:bg-slate-700 text-white dark:text-slate-200 py-2 md:py-2.5 rounded-lg md:rounded-xl font-bold text-xs md:text-sm hover:bg-primary/90 dark:hover:bg-slate-600 transition-all"
+            className="w-full py-2 md:py-2.5 bg-slate-50 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg md:rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-100 dark:border-slate-700 uppercase text-[10px] md:text-xs tracking-wider"
           >
-            VER
+            <Icon name="visibility" className="text-xs md:text-sm" />
+            VER MAS DETALLES
           </button>
         </div>
       </div>
