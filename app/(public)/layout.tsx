@@ -6,7 +6,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <div>
       {children}
       <div className="md:hidden">
-        <BottomNav currentPath="/" />
+        <BottomNav currentPath="/" /> 
       </div>
     </div>
   )
