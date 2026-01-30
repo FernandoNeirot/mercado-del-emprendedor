@@ -6,7 +6,7 @@ import { VendorsSection } from "@/features/vendors/VendorsSection";
 import { EntrepreneurCTA } from "@/features/cta/EntrepreneurCTA";
 import { Footer } from "@/features/footer/Footer";
 
-export default function Home() {
+export default function Home() {  
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
       <Header />

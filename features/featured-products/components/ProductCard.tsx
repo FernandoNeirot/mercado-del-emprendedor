@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Icon } from "@/shared/components/Icon";
 
 export interface Product {
@@ -12,11 +13,36 @@ export interface Product {
 
 interface ProductCardProps {
   product: Product;
+  /** Precio opcional (ej: en catálogo de tienda) */
+  price?: number;
+  /** Enlace al detalle (si se pasa, el botón es un Link en lugar de button) */
+  href?: string;
   onView?: (productId: string) => void;
   onFavorite?: (productId: string) => void;
 }
 
-export function ProductCard({ product, onView, onFavorite }: ProductCardProps) {
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+export function ProductCard({
+  product,
+  price,
+  href,
+  onView,
+  onFavorite,
+}: ProductCardProps) {
+  const actionContent = (
+    <>
+      <Icon name="visibility" className="text-xs md:text-sm" />
+      VER MÁS DETALLES
+    </>
+  );
+
   return (
     <div className="bg-gray-50 dark:bg-slate-800 rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 group flex flex-col hover:shadow-lg transition-shadow">
       <div className="relative h-40 md:h-56 overflow-hidden">
@@ -27,6 +53,7 @@ export function ProductCard({ product, onView, onFavorite }: ProductCardProps) {
           src={product.imageUrl}
         />
         <button
+          type="button"
           onClick={() => onFavorite?.(product.id)}
           className="absolute top-2 right-2 md:top-3 md:right-3 "
         >
@@ -40,17 +67,35 @@ export function ProductCard({ product, onView, onFavorite }: ProductCardProps) {
         <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">
           {product.vendor}
         </p>
-        <h4 className="font-bold text-sm md:text-lg mb-3 md:mb-4 truncate text-slate-800 dark:text-slate-100">
+        <h4
+          className={`font-bold text-sm md:text-lg truncate text-slate-800 dark:text-slate-100 ${
+            price != null ? "mb-2 md:mb-3" : "mb-3 md:mb-4"
+          }`}
+        >
           {product.name}
         </h4>
+        {price != null && (
+          <p className="font-bold text-primary dark:text-emerald-400 text-sm md:text-base mb-3 md:mb-4">
+            {formatPrice(price)}
+          </p>
+        )}
         <div className="mt-auto">
-          <button
-            onClick={() => onView?.(product.id)}
-            className="w-full py-2 md:py-2.5 bg-slate-200 shadow-sm dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg md:rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-100 dark:border-slate-700 uppercase text-[10px] md:text-xs tracking-wider"
-          >
-            <Icon name="visibility" className="text-xs md:text-sm" />
-            VER MÁS DETALLES
-          </button>
+          {href ? (
+            <Link
+              href={href}
+              className="w-full py-2 md:py-2.5 bg-slate-200 shadow-sm dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg md:rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-100 dark:border-slate-700 uppercase text-[10px] md:text-xs tracking-wider"
+            >
+              {actionContent}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onView?.(product.id)}
+              className="w-full py-2 md:py-2.5 bg-slate-200 shadow-sm dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg md:rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-100 dark:border-slate-700 uppercase text-[10px] md:text-xs tracking-wider"
+            >
+              {actionContent}
+            </button>
+          )}
         </div>
       </div>
     </div>

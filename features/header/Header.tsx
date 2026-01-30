@@ -22,6 +22,8 @@ interface HeaderProps {
   onSearch?: (value: string) => void;
   locations?: LocationData[];
   onLocationChange?: (provincia: string, localidad: string) => void;
+  hideLocation?: boolean
+
 }
 
 const defaultLocations: LocationData[] = [
@@ -39,6 +41,7 @@ export function Header({
   onSearch,
   locations = defaultLocations,
   onLocationChange,
+  hideLocation = false
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -83,6 +86,8 @@ export function Header({
           </div>
         </div>
         <div className="px-4 pb-3 gap-2 block min-[360px]:flex">
+          {
+            !hideLocation &&
           <div className="mb-2 min-[360px]:mb-0">
 
             <LocationSelector
@@ -91,6 +96,7 @@ export function Header({
               variant="button"
               />
               </div>
+            }
 
           <SearchBar onSearch={onSearch} placeholder="Buscar..." />
         </div>
