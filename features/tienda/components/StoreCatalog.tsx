@@ -28,42 +28,11 @@ function storeProductToProduct(
 }
 
 export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
-  const [selectedDeliveryDays, setSelectedDeliveryDays] = useState<string[]>(
-    vendor.deliveryDays ?? []
-  );
+  console.log(products);
   const [activeFilter, setActiveFilter] = useState("todos");
-
-  const toggleDay = (day: string) => {
-    setSelectedDeliveryDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-    );
-  };
 
   return (
     <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl">
-      <h2 className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 md:mb-4">
-        Días de entrega
-      </h2>
-      <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
-        {(vendor.deliveryDays ?? []).map((day) => {
-          const isSelected = selectedDeliveryDays.includes(day);
-          return (
-            <button
-              key={day}
-              type="button"
-              onClick={() => toggleDay(day)}
-              className={`px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold transition-colors ${
-                isSelected
-                  ? "bg-primary dark:bg-emerald-600 text-white"
-                  : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
-              }`}
-            >
-              {day}
-            </button>
-          );
-        })}
-      </div>
-
       <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
         {productFilters.map((filter) => (
           <button

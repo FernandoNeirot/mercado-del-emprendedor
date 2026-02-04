@@ -6,11 +6,11 @@ import { StoreTabs, type StoreTab } from "./components/StoreTabs";
 import { StoreCatalog } from "./components/StoreCatalog";
 import { StoreStory } from "./components/StoreStory";
 import { StoreSocial } from "./components/StoreSocial";
-import { StoreProcessGallery } from "./components/StoreProcessGallery";
 import { StorePayments } from "./components/StorePayments";
 import type { StoreVendor } from "./types";
 import type { StoreProduct } from "./types";
-import { Header } from "../header";
+import { StoreAvailable } from "./components/StoreAvailable";
+import { StorePersonalInfo } from "./components/StorePersonalInfo";
 
 interface StoreViewProps {
   vendor: StoreVendor;
@@ -22,7 +22,6 @@ export function StoreView({ vendor, products }: StoreViewProps) {
 
   return (
     <>
-      <Header hideLocation />
       <div className="min-h-screen bg-background-light dark:bg-background-dark pb-20 md:pb-10">
         <div className="max-w-[1240px] mx-auto md:px-6 lg:px-8">
           <StoreHeader vendor={vendor} onContact={() => {}} />
@@ -34,25 +33,26 @@ export function StoreView({ vendor, products }: StoreViewProps) {
 
           {activeTab === "historia" && (
             <div className="space-y-0">
-              <StoreStory vendor={vendor} />
-              <StoreSocial vendor={vendor} />
-              <StoreProcessGallery vendor={vendor} />
-              <StorePayments vendor={vendor} />
+              <StoreStory vendor={vendor} isStoreTab={true}      />       
             </div>
           )}
 
-          {activeTab === "reseñas" && (
-            <section className="p-4 md:p-8 py-12 text-center text-slate-500 dark:text-slate-400 text-sm md:text-base">
-              Próximamente: reseñas de clientes
-            </section>
+          {activeTab === "informacion" && (
+            <div className="space-y-0">
+              <StoreAvailable vendor={vendor} />
+              <StorePayments vendor={vendor} />
+              <StorePersonalInfo vendor={vendor} />
+              <StoreSocial vendor={vendor} />
+            </div>
           )}
 
           {activeTab === "catalogo" && (
             <div className="space-y-0 border-t border-slate-200 dark:border-slate-800">
               <StoreStory vendor={vendor} />
-              <StoreSocial vendor={vendor} />
-              <StoreProcessGallery vendor={vendor} />
+              <StoreAvailable vendor={vendor} />
               <StorePayments vendor={vendor} />
+              <StorePersonalInfo vendor={vendor} />
+              <StoreSocial vendor={vendor} />
             </div>
           )}
         </div>

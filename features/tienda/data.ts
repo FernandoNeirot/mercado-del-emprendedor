@@ -18,6 +18,15 @@ export async function getStoreById(id: string): Promise<StoreVendor | null> {
         location: "Avellaneda",
       },
       deliveryDays: ["Lun", "Mié", "Vie", "Sáb"],
+      availability: [
+        { day: "Lun", availability: "10:00 - 13:00 / 15:00 - 18:00" },
+        { day: "Mar", availability: "10:00 - 13:00 / 15:00 - 18:00" },
+        { day: "Mie", availability: "10:00 - 13:00 / 15:00 - 18:00" },
+        { day: "Jue", availability: "10:00 - 13:00 / 15:00 - 18:00" },
+        { day: "Vie", availability: "10:00 - 13:00 / 15:00 - 18:00" },
+        { day: "Sáb", availability: "Cerrado" },
+        { day: "Dom", availability: "Cerrado" },
+      ],
       story: {
         founderName: "Marina, Fundadora",
         paragraphs: [
@@ -28,7 +37,13 @@ export async function getStoreById(id: string): Promise<StoreVendor | null> {
       socialLinks: {
         instagram: "#",
         facebook: "#",
-        tiktok: "#",
+        tiktok: "#",        
+      },
+      personalInfo: {
+        website: "",
+        email: "#",
+        phone: "#",
+        address: "#",
       },
       processGallery: [
         { type: "image", url: "#", thumbnailUrl: "https://picsum.photos/200/200?1" },

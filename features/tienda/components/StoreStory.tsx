@@ -2,17 +2,24 @@
 
 import React from "react";
 import type { StoreVendor } from "../types";
+import { cn } from "@/shared/utils/cn";
 
 interface StoreStoryProps {
   vendor: StoreVendor;
+  isStoreTab?: boolean;
 }
 
-export function StoreStory({ vendor }: StoreStoryProps) {
+export function StoreStory({ vendor, isStoreTab }: StoreStoryProps) {
   const story = vendor.story;
   if (!story) return null;
 
   return (
-    <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+    <section
+      className={cn(
+        "p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800",
+        isStoreTab && "min-h-[calc(100dvh-220px)] flex flex-col"
+      )}
+    >
       <div className="flex items-start gap-4 md:gap-6 max-w-3xl mx-auto">
         <div className="shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -41,6 +48,7 @@ export function StoreStory({ vendor }: StoreStoryProps) {
           </div>
         </div>
       </div>
+      {isStoreTab && <div className="mt-6 md:mt-8 flex-1 min-h-px" aria-hidden />}
     </section>
   );
 }

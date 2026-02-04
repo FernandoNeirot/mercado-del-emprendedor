@@ -2,7 +2,7 @@
 
 import React from "react";
 
-export type StoreTab = "catalogo" | "historia" | "reseñas";
+export type StoreTab = "catalogo" | "historia" | "informacion";
 
 interface StoreTabsProps {
   activeTab: StoreTab;
@@ -12,13 +12,13 @@ interface StoreTabsProps {
 const tabs: { id: StoreTab; label: string }[] = [
   { id: "catalogo", label: "Catálogo" },
   { id: "historia", label: "Mi Historia" },
-  { id: "reseñas", label: "Reseñas" },
+  { id: "informacion", label: "Información" },
 ];
 
 export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {
   return (
     <nav
-      className="sticky top-0 z-30 flex bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 rounded-b-xl md:rounded-b-2xl overflow-hidden"
+      className="sticky top-0 z-30 flex bg-white dark:bg-slate-900 border-b border-green-900 dark:border-green-900  overflow-hidden"
       aria-label="Secciones de la tienda"
     >
       <div className="flex w-full md:max-w-md md:mx-auto">
