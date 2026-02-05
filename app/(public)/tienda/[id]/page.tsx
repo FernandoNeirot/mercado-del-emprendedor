@@ -1,7 +1,7 @@
 import { Header } from "@/features/header";
 import { StoreView } from "@/features/tienda";
 import { redirect } from "next/navigation";
-import { getProductsByStoreId, getStoreById } from "./serverAction";
+import { getProductsByStoreId, getStoreById } from "@/lib/server-actions";
 
 interface TiendaPageProps {
   params: Promise<{ id: string }>;
