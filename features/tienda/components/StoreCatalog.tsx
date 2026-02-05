@@ -10,11 +10,6 @@ interface StoreCatalogProps {
   products: StoreProduct[];
 }
 
-const productFilters = [
-  { id: "todos", label: "Todos los productos" },
-  { id: "temporada", label: "Temporada" },
-];
-
 function storeProductToProduct(
   storeProduct: StoreProduct,
   vendorName: string
@@ -23,17 +18,30 @@ function storeProductToProduct(
     id: storeProduct.id,
     name: storeProduct.name,
     vendor: vendorName,
-    imageUrl: storeProduct.imageUrl,
+    imageUrl: storeProduct.images[0] ?? "",
   };
 }
 
+const ALL_PRODUCTS_ID = "todos";
+
 export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
-  const [activeFilter, setActiveFilter] = useState("todos");
+  const [activeFilter, setActiveFilter] = useState(ALL_PRODUCTS_ID);
+
+  const categoryFilters = [...new Set(products.map((p) => p.category))];
+  const filterOptions = [
+    { id: ALL_PRODUCTS_ID, label: "Todos los productos" },
+    ...categoryFilters.map((id) => ({ id, label: id })).sort((a,b)=>a.label.localeCompare(b.label)),
+  ];
+
+  const filteredProducts =
+    activeFilter === ALL_PRODUCTS_ID
+      ? products
+      : products.filter((p) => p.category === activeFilter);
 
   return (
     <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl">
       <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
-        {productFilters.map((filter) => (
+        {filterOptions.map((filter) => (
           <button
             key={filter.id}
             type="button"
@@ -50,7 +58,7 @@ export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={storeProductToProduct(product, vendor.name)}

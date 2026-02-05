@@ -18,7 +18,7 @@ const tabs: { id: StoreTab; label: string }[] = [
 export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {
   return (
     <nav
-      className="sticky top-0 z-30 flex bg-white dark:bg-slate-900 border-b border-green-900 dark:border-green-900  overflow-hidden"
+      className="sticky top-[80px] z-30 flex bg-white dark:bg-slate-900 border-b border-green-900 dark:border-green-900  overflow-hidden"
       aria-label="Secciones de la tienda"
     >
       <div className="flex w-full md:max-w-md md:mx-auto">

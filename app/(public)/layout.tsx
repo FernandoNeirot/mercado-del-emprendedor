@@ -1,3 +1,4 @@
+import { Footer } from '@/features/footer'
 import { BottomNav } from '@/features/navigation'
 import React from 'react'
 
@@ -8,6 +9,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <div className="md:hidden">
         <BottomNav currentPath="/" /> 
       </div>
+      <Footer />
     </div>
   )
 }

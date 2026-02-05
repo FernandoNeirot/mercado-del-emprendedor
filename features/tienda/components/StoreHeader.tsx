@@ -11,7 +11,7 @@ interface StoreHeaderProps {
 }
 
 export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
-  const hasBanner = Boolean(vendor.bannerUrl);
+  const hasBanner = Boolean(vendor?.bannerUrl);
 
   return (
     <header className="relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
@@ -54,7 +54,7 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
         <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl p-2 md:p-2.5 shadow-xl border border-slate-100 dark:border-slate-700 -mb-8 md:-mb-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={vendor.logoUrl}
+            src={vendor?.logoUrl ?? ""}
             alt={vendor.name}
             className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-xl md:rounded-2xl object-cover"
           />

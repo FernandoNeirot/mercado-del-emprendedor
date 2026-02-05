@@ -1,6 +1,6 @@
-import { StoreVendor } from "@/features/tienda";
+import { StoreProduct, StoreVendor } from "@/features/tienda";
 
-export const mockStore:StoreVendor = {
+export const mockStore: StoreVendor = {
     id: "1",
     slug: "feni-indumentaria-infantil",
     category: "ropa",
@@ -46,4 +46,26 @@ export const mockStore:StoreVendor = {
         founderName: "John Doe",
         paragraphs: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."],
     },
+}
+
+export const mockProducts: StoreProduct = {
+    id: "2",
+    name: "Product 2",
+    price: 100,
+    category: "Category 2",
+    imageUrl: "https://example.com/image.jpg",
+    storeId: "1",
+    slug: "product-2",
+    description: "Description 1",
+    richDescription: "<b>Rich</b> Description 1",
+    compareAtPrice: 120,
+    images: ["https://example.com/image.jpg", "https://example.com/image2.jpg"],
+    sku: "1234567890",
+    stock: 100,
+    featured: true,
+    variants: [{ name: "Size", options: ["S", "M", "L"] }],
+    specs: [{ label: "Material", value: "100% Algodón" }],
+    ratings: { average: 4.5, count: 10 },
+    createdAt: new Date().toISOString() as string,
+    updatedAt: new Date().toISOString() as string,
 }

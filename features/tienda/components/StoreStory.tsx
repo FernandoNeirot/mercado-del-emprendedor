@@ -24,7 +24,7 @@ export function StoreStory({ vendor, isStoreTab }: StoreStoryProps) {
         <div className="shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={vendor.logoUrl}
+            src={vendor?.logoUrl ?? ""}
             alt={vendor.name}
             className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700"
           />
