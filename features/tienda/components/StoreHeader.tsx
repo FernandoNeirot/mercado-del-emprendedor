@@ -15,7 +15,6 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
 
   return (
     <header className="relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
-      {/* Banner de la tienda */}
       <div className="absolute inset-x-0 top-0 h-44 md:h-56 lg:h-64">
         {hasBanner ? (
           <>

@@ -8,5 +8,4 @@ export { StoreCatalog } from "./components/StoreCatalog";
 export { StoreProductCard } from "./components/StoreProductCard";
 export { StoreStory } from "./components/StoreStory";
 export { StoreSocial } from "./components/StoreSocial";
-export { StoreProcessGallery } from "./components/StoreProcessGallery";
 export { StorePayments } from "./components/StorePayments";

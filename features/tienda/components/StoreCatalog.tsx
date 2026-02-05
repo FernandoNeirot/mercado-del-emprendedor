@@ -28,7 +28,6 @@ function storeProductToProduct(
 }
 
 export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
-  console.log(products);
   const [activeFilter, setActiveFilter] = useState("todos");
 
   return (
