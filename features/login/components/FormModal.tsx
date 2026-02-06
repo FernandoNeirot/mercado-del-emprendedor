@@ -78,7 +78,7 @@ export function FormModal({
 
   return (
     <div
-      className="fixed inset-0 z-100 flex items-end justify-center md:items-center"
+      className="fixed inset-0 z-100 flex items-end justify-center md:items-center mb-20 md:mb-0"
       role="dialog"
       aria-modal="true"
       aria-label={title ?? "Modal"}
@@ -128,7 +128,7 @@ export function FormModal({
           </div>
         )}
 
-        <div className="flex flex-1 flex-col overflow-auto mb-25">{children}</div>
+        <div className="flex flex-1 flex-col overflow-auto pb-5 md:pb-0">{children}</div>
       </div>
     </div>
   );
