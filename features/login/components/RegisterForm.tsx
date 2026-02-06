@@ -9,12 +9,14 @@ export interface RegisterFormProps {
   onSubmit?: (data: { usuario: string; contraseña: string }) => void;
   onSwitchToLogin?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 export function RegisterForm({
   onSubmit,
   onSwitchToLogin,
   className,
+  disabled = false,
 }: RegisterFormProps) {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
@@ -77,7 +79,13 @@ export function RegisterForm({
         </div>
       </div>
 
-      <Button type="submit" variant="primary" size="lg" className="w-full">
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        className="w-full"
+        disabled={disabled}
+      >
         Crear cuenta
       </Button>
 
@@ -88,6 +96,7 @@ export function RegisterForm({
           size="lg"
           className="w-full"
           onClick={onSwitchToLogin}
+          disabled={disabled}
         >
           Ya tengo cuenta
         </Button>

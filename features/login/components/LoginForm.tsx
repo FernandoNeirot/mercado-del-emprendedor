@@ -10,6 +10,7 @@ export interface LoginFormProps {
   onSwitchToRegister?: () => void;
   onForgotPassword?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 export function LoginForm({
@@ -17,6 +18,7 @@ export function LoginForm({
   onSwitchToRegister,
   onForgotPassword,
   className,
+  disabled = false,
 }: LoginFormProps) {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
@@ -91,7 +93,13 @@ export function LoginForm({
         </div>
       )}
 
-      <Button type="submit" variant="primary" size="lg" className="w-full">
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        className="w-full"
+        disabled={disabled}
+      >
         Ingresar
       </Button>
 
@@ -102,6 +110,7 @@ export function LoginForm({
           size="lg"
           className="w-full"
           onClick={onSwitchToRegister}
+          disabled={disabled}
         >
           Registrarse
         </Button>

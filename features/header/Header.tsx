@@ -10,6 +10,7 @@ import {
   type LocationData,
 } from "@/features/location-selector";
 import { AuthModal } from "@/features/login";
+import { getSession, type AuthUser } from "@/lib/client-auth";
 
 interface Category {
   id: string;
@@ -47,11 +48,24 @@ export function Header({
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    getSession().then(setUser);
+  }, [authOpen]);
+
+  const handleProfileClick = () => {
+    if (user) {
+      alert("Ya estás logueado");
+    } else {
+      setAuthOpen(true);
+    }
+  };
 
   const isDark = theme === "dark";
   return (
@@ -80,7 +94,7 @@ export function Header({
               <Icon name="favorite" className="text-xl" />
             </button>
             <button
-              onClick={() => setAuthOpen(true)}
+              onClick={handleProfileClick}
               className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
               title="Mi Perfil"
             >
@@ -159,7 +173,7 @@ export function Header({
                 <Icon name="favorite" className="text-lg lg:text-xl" />
               </button>
               <button
-                onClick={() => setAuthOpen(true)}
+                onClick={handleProfileClick}
                 className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                 suppressHydrationWarning
                 title="Mi Perfil"
@@ -173,17 +187,7 @@ export function Header({
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        onLogin={(data) => {
-          console.log("Login", data);
-          setAuthOpen(false);
-        }}
-        onRegister={(data) => {
-          console.log("Register", data);
-          setAuthOpen(false);
-        }}
-        onForgotPassword={() => {
-          // TODO: flujo recuperar contraseña
-        }}
+        onAuthSuccess={() => getSession().then(setUser)}
       />
     </header>
   );
