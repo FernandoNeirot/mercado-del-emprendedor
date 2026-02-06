@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Logo } from "./components/Logo";
 import { SearchBar } from "./components/SearchBar";
 import { Icon } from "@/shared/components/Icon";
@@ -10,7 +11,7 @@ import {
   type LocationData,
 } from "@/features/location-selector";
 import { AuthModal } from "@/features/login";
-import { getSession, type AuthUser } from "@/lib/client-auth";
+import type { AuthUser } from "@/lib/client-auth";
 
 interface Category {
   id: string;
@@ -18,14 +19,15 @@ interface Category {
 }
 
 interface HeaderProps {
+  /** Usuario desde el servidor: evita parpadeo y validación inmediata. */
+  initialUser?: AuthUser | null;
   categories?: Category[];
   selectedCategory?: string;
   onCategoryChange?: (categoryId: string) => void;
   onSearch?: (value: string) => void;
   locations?: LocationData[];
   onLocationChange?: (provincia: string, localidad: string) => void;
-  hideLocation?: boolean
-
+  hideLocation?: boolean;
 }
 
 const defaultLocations: LocationData[] = [
@@ -40,24 +42,25 @@ const defaultLocations: LocationData[] = [
 ];
 
 export function Header({
+  initialUser = null,
   onSearch,
   locations = defaultLocations,
   onLocationChange,
-  hideLocation = false
+  hideLocation = false,
 }: HeaderProps) {
+  const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(initialUser);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUser(initialUser);
+  }, [initialUser]);
+
+  useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    getSession().then(setUser);
-  }, [authOpen]);
 
   const handleProfileClick = () => {
     if (user) {
@@ -187,7 +190,7 @@ export function Header({
       <AuthModal
         open={authOpen}
         onClose={() => setAuthOpen(false)}
-        onAuthSuccess={() => getSession().then(setUser)}
+        onAuthSuccess={() => router.refresh()}
       />
     </header>
   );
