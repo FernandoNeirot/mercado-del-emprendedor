@@ -17,8 +17,7 @@ export function Footer() {
               </p>
             </div>
             <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 leading-relaxed">
-              Conectamos el talento local con personas que valoran lo artesanal y
-              lo hecho a mano en Buenos Aires.
+              Conectamos el talento local con personas que valoran lo emprendedor.
             </p>
             <div className="flex gap-4">
               <a
@@ -77,7 +76,7 @@ export function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
-          <p>© 2024 Mercado del Emprendedor. Hecho con ❤️ para la comunidad de artesanos.</p>
+          <p>© 2024 Mercado del Emprendedor. Hecho con ❤️ para la comunidad de emprendedores.</p>
           <div className="flex gap-6">            
             <a className="hover:text-primary transition-colors" href="#">
               Términos

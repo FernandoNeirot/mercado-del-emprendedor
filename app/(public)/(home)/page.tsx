@@ -9,7 +9,6 @@ import { Footer } from "@/features/footer/Footer";
 export default function Home() {  
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
-      <Header />
       <main className="max-w-310 px-4 sm:mx-auto">
         <PromotionsSection />
         <FeaturedVendor />
@@ -17,7 +16,6 @@ export default function Home() {
         <VendorsSection />
         <EntrepreneurCTA />
       </main>
-      <Footer />
     </div>
   );
 }

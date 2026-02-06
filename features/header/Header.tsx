@@ -9,6 +9,7 @@ import {
   LocationSelector,
   type LocationData,
 } from "@/features/location-selector";
+import { AuthModal } from "@/features/login";
 
 interface Category {
   id: string;
@@ -45,6 +46,7 @@ export function Header({
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -78,7 +80,8 @@ export function Header({
               <Icon name="favorite" className="text-xl" />
             </button>
             <button
-              className="p-2 text-slate-200 dark:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+              onClick={() => setAuthOpen(true)}
+              className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
               title="Mi Perfil"
             >
               <Icon name="person" className="text-xl" />
@@ -156,7 +159,9 @@ export function Header({
                 <Icon name="favorite" className="text-lg lg:text-xl" />
               </button>
               <button
-                className="p-2 lg:p-2.5 text-slate-200 dark:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                onClick={() => setAuthOpen(true)}
+                className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                suppressHydrationWarning
                 title="Mi Perfil"
               >
                 <Icon name="person" className="text-lg lg:text-xl" />
@@ -165,6 +170,21 @@ export function Header({
           </div>
         </div>
       </div>
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onLogin={(data) => {
+          console.log("Login", data);
+          setAuthOpen(false);
+        }}
+        onRegister={(data) => {
+          console.log("Register", data);
+          setAuthOpen(false);
+        }}
+        onForgotPassword={() => {
+          // TODO: flujo recuperar contraseña
+        }}
+      />
     </header>
   );
 }

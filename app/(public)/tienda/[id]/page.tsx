@@ -16,11 +16,8 @@ export default async function TiendaPage({ params }: TiendaPageProps) {
   }
 
   const products = await getProductsByStoreId(store.id);
-  
+
   return (
-    <>
-      <Header />
-      <StoreView vendor={store} products={products} />
-    </>
+    <StoreView vendor={store} products={products} />
   );
 }

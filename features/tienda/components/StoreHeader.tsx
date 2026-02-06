@@ -33,18 +33,12 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
 
       {/* Barra superior */}
       <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-slate-900/85 via-slate-900/40 to-transparent">
-        <div className="flex items-center justify-between px-4 md:px-6 py-3 max-w-[1240px] mx-auto">
-          <Link
-            href="/"            
-            aria-label="Volver"
-          >
-            <Icon name="arrow_back" className="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-colors" />
-          </Link>
+        <div className="flex items-center justify-end px-4 md:px-6 py-3 max-w-[1240px] mx-auto">          
           <button
             type="button"            
             aria-label="Compartir"
           >
-            <Icon name="share" className="text-xl p-2 rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm transition-colors" />
+            <Icon name="share" className="text-xl p-2 rounded-full bg-white/40 hover:bg-white/30 text-white backdrop-blur-sm transition-colors" />
           </button>
         </div>
       </div>

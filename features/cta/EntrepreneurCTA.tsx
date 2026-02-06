@@ -19,7 +19,7 @@ export function EntrepreneurCTA({
         </h2>
         <p className="text-sm md:text-lg text-emerald-50 mb-6 md:mb-10">
           Sumate a la red más grande de talento local y compartí tu historia con
-          una comunidad que valora lo artesanal.
+          una comunidad que valora a los emprendedores.
         </p>
         <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 justify-center md:justify-start">
           <button
