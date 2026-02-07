@@ -81,8 +81,14 @@ export async function getServerUser(): Promise<ServerUser | null> {
       return null;
     }
 
-    // Verificar el token con Firebase Admin
-    const app = initializeAdminApp();
+    // Verificar el token con Firebase Admin (puede fallar si faltan env en Vercel/producción)
+    let app;
+    try {
+      app = initializeAdminApp();
+    } catch (initError) {
+      console.error("[getServerUser] Firebase Admin no disponible (revisa FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY):", initError);
+      return null;
+    }
     const auth = getAuth(app);
 
     try {
