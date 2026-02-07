@@ -1,0 +1,40 @@
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
+
+export const SITE_NAME = "Mercado del Emprendedor";
+export const SITE_DESCRIPTION =
+  "La red más grande de talento local. Descubrí emprendedores, tiendas y productos cerca tuyo.";
+export const SITE_KEYWORDS = [
+  "mercado del emprendedor",
+  "emprendedores",
+  "tiendas locales",
+  "comprar local",
+  "productos artesanales",
+  "negocios locales",
+  "comercio local",
+];
+export const LOCALE = "es_AR";
+export const TWITTER_HANDLE = "@MercadoDelEmprendedor";
+
+export function getBaseUrl(): string {
+  if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "");
+  }
+  return BASE_URL.replace(/\/$/, "");
+}
+
+export function canonicalUrl(path: string): string {
+  const base = getBaseUrl();
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${p}`;
+}
+
+/** Imagen por defecto para Open Graph (1200x630 recomendado). Debe ser URL absoluta. */
+export const DEFAULT_OG_IMAGE = "/og-default.png";
+
+export function ogImageUrl(pathOrUrl: string): string {
+  if (pathOrUrl.startsWith("http")) return pathOrUrl;
+  return canonicalUrl(pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`);
+}

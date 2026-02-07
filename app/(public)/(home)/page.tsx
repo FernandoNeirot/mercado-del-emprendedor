@@ -5,6 +5,19 @@ import { FeaturedProducts } from "@/features/featured-products/FeaturedProducts"
 import { VendorsSection } from "@/features/vendors/VendorsSection";
 import { EntrepreneurCTA } from "@/features/cta/EntrepreneurCTA";
 import { Footer } from "@/features/footer/Footer";
+import type { Metadata } from "next";
+import { canonicalUrl, SITE_NAME, SITE_DESCRIPTION } from "@/shared/configs/seo";
+
+export const metadata: Metadata = {
+  title: "Inicio",
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: canonicalUrl("/") },
+  openGraph: {
+    url: canonicalUrl("/"),
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+  },
+};
 
 export default function Home() {  
   return (
