@@ -12,7 +12,6 @@ export interface AuthUser {
   displayName?: string | null;
 }
 
-
 export const loginUser = cache(
   async (
     email: string,

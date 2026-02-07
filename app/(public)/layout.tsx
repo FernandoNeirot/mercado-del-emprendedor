@@ -4,6 +4,8 @@ import { BottomNav } from '@/features/navigation'
 import { getServerUser } from '@/shared/lib/auth'
 import React from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const user = await getServerUser()
   return (
