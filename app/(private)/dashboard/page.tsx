@@ -2,6 +2,9 @@ import { getStores } from "@/lib/server-actions";
 import { DashboardStoreList } from "@/features/dashboard-tienda";
 import type { Metadata } from "next";
 
+/** Evita prerender en build: getStores() hace fetch a la API y no hay servidor en build. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard | Mis tiendas",
   description: "Gestioná tus tiendas",
