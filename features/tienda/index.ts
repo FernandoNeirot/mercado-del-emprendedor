@@ -3,7 +3,7 @@ export { getStoreById, getStoreProducts } from "./data";
 export type { StoreVendor, StoreProduct } from "./types";
 export { StoreTopBar } from "./components/StoreTopBar";
 export { StoreHeader } from "./components/StoreHeader";
-export { StoreTabs } from "./components/StoreTabs";
+export { StoreTabs, type StoreTab } from "./components/StoreTabs";
 export { StoreCatalog } from "./components/StoreCatalog";
 export { StoreProductCard } from "./components/StoreProductCard";
 export { StoreStory } from "./components/StoreStory";

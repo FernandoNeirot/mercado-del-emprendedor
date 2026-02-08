@@ -12,6 +12,7 @@ export const mockStore: StoreVendor = {
     tagline: "Feni Indumentaria Infantil",
     verified: true,
     stats: {
+        clients: "100",
         sales: "100",
         yearsInBusiness: "10",
         location: "Buenos Aires",

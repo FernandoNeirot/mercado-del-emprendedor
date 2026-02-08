@@ -1,2 +1,2 @@
-export { getStoreById } from "./stores";
+export { getStoreById, getStores, createStore, updateStore } from "./stores";
 export { getProductsByStoreId } from "./products";
