@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Logo } from "./components/Logo";
 import { SearchBar } from "./components/SearchBar";
 import { Icon } from "@/shared/components/Icon";
@@ -49,10 +49,33 @@ export function Header({
   hideLocation = false,
 }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const isTiendaPage = pathname?.startsWith("/tienda") ?? false;
+  const showLocation = !hideLocation && !isTiendaPage;
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
+
+  const buscarFromUrl = searchParams?.get("buscar") ?? "";
+  const [tiendaSearch, setTiendaSearch] = useState(buscarFromUrl);
+  useEffect(() => {
+    setTiendaSearch(buscarFromUrl);
+  }, [pathname, buscarFromUrl]);
+
+  const handleSearch = (value: string) => {
+    if (isTiendaPage) {
+      setTiendaSearch(value);
+      const params = new URLSearchParams(searchParams?.toString() ?? "");
+      if (value.trim()) params.set("buscar", value);
+      else params.delete("buscar");
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname ?? "/", { scroll: false });
+    } else {
+      onSearch?.(value);
+    }
+  };
 
   useEffect(() => {
     setUser(initialUser);
@@ -91,12 +114,6 @@ export function Header({
               )}
             </button>
             <button
-              className="p-2 text-slate-200 dark:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-              title="Favoritos"
-            >
-              <Icon name="favorite" className="text-xl" />
-            </button>
-            <button
               onClick={handleProfileClick}
               className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
               title="Mi Perfil"
@@ -106,19 +123,20 @@ export function Header({
           </div>
         </div>
         <div className="px-4 pb-3 gap-2 block min-[360px]:flex">
-          {
-            !hideLocation &&
-          <div className="mb-2 min-[360px]:mb-0">
-
-            <LocationSelector
-              locations={locations}
-              onLocationChange={onLocationChange}
-              variant="button"
+          {showLocation && (
+            <div className="mb-2 min-[360px]:mb-0">
+              <LocationSelector
+                locations={locations}
+                onLocationChange={onLocationChange}
+                variant="button"
               />
-              </div>
-            }
-
-          <SearchBar onSearch={onSearch} placeholder="Buscar..." />
+            </div>
+          )}
+          <SearchBar
+            onSearch={handleSearch}
+            placeholder="Buscar..."
+            value={isTiendaPage ? tiendaSearch : undefined}
+          />
         </div>
       </div>
 
@@ -127,35 +145,32 @@ export function Header({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20 gap-2 lg:gap-4">
             <Logo />
-            <div className="hidden lg:flex">
-              <LocationSelector
-                locations={locations}
-                onLocationChange={onLocationChange}
-                variant="button"
-              />
-            </div>
+            <div className="flex items-center gap-2 lg:gap-4 w-full">
+            {showLocation && (
+              <div className="hidden lg:flex">
+                <LocationSelector
+                  locations={locations}
+                  onLocationChange={onLocationChange}
+                  variant="button"
+                />
+              </div>
+            )}
             <div className="flex-1 flex items-center max-w-xs lg:max-w-md mx-2 lg:mx-4 min-w-0">
               <div className="relative w-full">
                 <Icon
                   name="search"
                   className="absolute mt-2 inset-y-0 left-0 pl-3 lg:pl-4 flex items-center pointer-events-none text-slate-400 text-lg lg:text-xl"
-                />
+                  />
                 <input
                   type="text"
                   className="block w-full pl-9 lg:pl-11 pr-3 lg:pr-4 py-2 lg:py-2.5 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-xs lg:text-sm focus:ring-2 focus:ring-primary/20 transition-all"
                   placeholder="Buscar..."
-                  onChange={(e) => onSearch?.(e.target.value)}
+                  value={isTiendaPage ? tiendaSearch : undefined}
+                  onChange={(e) => handleSearch(e.target.value)}
                 />
               </div>
-            </div>
-            <nav className="hidden xl:flex items-center gap-4 lg:gap-6 mr-2 lg:mr-4 shrink-0">
-              <a
-                className="text-[10px] lg:text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap"
-                href="#"
-              >
-                Categorías
-              </a>
-            </nav>
+                  </div>
+            </div>         
             <div className="flex items-center gap-0.5 lg:gap-1 shrink-0">
               <button
                 onClick={toggleTheme}
@@ -168,12 +183,6 @@ export function Header({
                     className="text-base"
                   />
                 )}
-              </button>
-              <button
-                className="p-2 lg:p-2.5 text-slate-200 dark:text-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                title="Favoritos"
-              >
-                <Icon name="favorite" className="text-lg lg:text-xl" />
               </button>
               <button
                 onClick={handleProfileClick}

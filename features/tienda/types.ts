@@ -42,10 +42,9 @@ export interface StoreAvailability {
 }
 export interface StoreVendor {
   id: string;
-  slug: string; // Para URLs amigables: /tienda/nombre-de-la-tienda
-  category: "gastronomia" | "indumentaria" | "tecnologia" | string; // Rubro de la tienda
-  
-  isActive: boolean; // Para "apagar" tiendas temporalmente
+  slug: string;
+  category: string;  
+  isActive: boolean;
   createdAt: Date;
   name: string;
   logoUrl: string;
@@ -56,6 +55,7 @@ export interface StoreVendor {
     sales: string;
     yearsInBusiness: string;
     location: string;
+    clients: string;
   };
   story?: {
     founderName: string;

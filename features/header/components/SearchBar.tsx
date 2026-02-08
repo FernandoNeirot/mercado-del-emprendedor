@@ -6,11 +6,14 @@ import { Icon } from "@/shared/components/Icon";
 interface SearchBarProps {
   placeholder?: string;
   onSearch?: (value: string) => void;
+  /** Cuando se provee, el input es controlado (ej. en tienda para sincronizar con URL). */
+  value?: string;
 }
 
 export function SearchBar({
   placeholder = "Buscar productos o servicios...",
   onSearch,
+  value,
 }: SearchBarProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch?.(e.target.value);
@@ -27,6 +30,7 @@ export function SearchBar({
           type="text"
           className="block w-full pl-9 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 transition-all"
           placeholder={placeholder}
+          value={value}
           onChange={handleChange}
         />
       </div>

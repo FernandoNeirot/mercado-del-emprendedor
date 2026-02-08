@@ -76,30 +76,57 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
         </p>
 
         <div className="grid grid-cols-3 gap-4 md:gap-8 mt-6 md:mt-8 max-w-md mx-auto">
-          <div className="text-center">
-            <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
-              {vendor.stats.sales}
-            </p>
-            <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-              Ventas
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
-              {vendor.stats.yearsInBusiness}
-            </p>
-            <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-              En el rubro
-            </p>
-          </div>
-          <div className="text-center">
-            <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
-              {vendor.stats.location}
-            </p>
-            <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-              Ubicación
-            </p>
-          </div>
+        {
+            vendor.stats.clients && (
+              <div className="text-center">
+                <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+                  {vendor.stats.clients}
+                </p>
+                <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                  Clientes
+                </p>
+              </div>
+            )
+          }
+          {
+            vendor.stats.sales && (
+              <div className="text-center">
+                <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+                  {vendor.stats.sales}
+                </p>
+                <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                  Ventas
+                </p>
+              </div>
+            )
+          }
+
+          {
+            vendor.stats.yearsInBusiness && (
+              <div className="text-center">
+                <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+                  {vendor.stats.yearsInBusiness}
+                </p>
+                <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                  En el rubro
+                </p>
+              </div>
+            )
+          }
+
+{
+  vendor.stats.location && (
+    <div className="text-center">
+      <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+        {vendor.stats.location}
+      </p>
+      <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+        Ubicación
+      </p>
+    </div>
+  )
+}
+          
         </div>
 
         <button

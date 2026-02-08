@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { StoreHeader } from "./components/StoreHeader";
 import { StoreTabs, type StoreTab } from "./components/StoreTabs";
 import { StoreCatalog } from "./components/StoreCatalog";
@@ -15,10 +15,23 @@ import { StorePersonalInfo } from "./components/StorePersonalInfo";
 interface StoreViewProps {
   vendor: StoreVendor;
   products: StoreProduct[];
+  searchQuery?: string;
 }
 
-export function StoreView({ vendor, products }: StoreViewProps) {
+const SCROLL_OFFSET_PX = 150;
+
+export function StoreView({ vendor, products, searchQuery }: StoreViewProps) {
   const [activeTab, setActiveTab] = useState<StoreTab>("catalogo");
+  const catalogRef = useRef<HTMLDivElement>(null);
+  const hasScrolledForSearch = useRef(false);
+
+  useEffect(() => {
+    if (!searchQuery?.trim() || !catalogRef.current || hasScrolledForSearch.current) return;
+    hasScrolledForSearch.current = true;
+    const el = catalogRef.current;
+    const top = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX;
+    window.scrollTo({ top, behavior: "smooth" });
+  }, [searchQuery]);
 
   return (
     <>
@@ -28,7 +41,9 @@ export function StoreView({ vendor, products }: StoreViewProps) {
           <StoreTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
           {activeTab === "catalogo" && (
-            <StoreCatalog vendor={vendor} products={products} />
+            <div ref={catalogRef}>
+              <StoreCatalog vendor={vendor} products={products} searchQuery={searchQuery} />
+            </div>
           )}
 
           {activeTab === "historia" && (

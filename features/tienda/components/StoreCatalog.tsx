@@ -8,6 +8,8 @@ import type { StoreVendor } from "../types";
 interface StoreCatalogProps {
   vendor: StoreVendor;
   products: StoreProduct[];
+  /** Filtro de búsqueda desde la URL (?buscar=...). */
+  searchQuery?: string;
 }
 
 function storeProductToProduct(
@@ -24,10 +26,19 @@ function storeProductToProduct(
 
 const ALL_PRODUCTS_ID = "todos";
 
-export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
+export function StoreCatalog({ vendor, products, searchQuery }: StoreCatalogProps) {
   const [activeFilter, setActiveFilter] = useState(ALL_PRODUCTS_ID);
 
-  const categoryFilters = [...new Set(products.map((p) => p.category))];
+  const query = searchQuery?.trim().toLowerCase() ?? "";
+  const bySearch = query
+    ? products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          (p.description ?? "").toLowerCase().includes(query)
+      )
+    : products;
+
+  const categoryFilters = [...new Set(bySearch.map((p) => p.category))];
   const filterOptions = [
     { id: ALL_PRODUCTS_ID, label: "Todos los productos" },
     ...categoryFilters.map((id) => ({ id, label: id })).sort((a,b)=>a.label.localeCompare(b.label)),
@@ -35,8 +46,8 @@ export function StoreCatalog({ vendor, products }: StoreCatalogProps) {
 
   const filteredProducts =
     activeFilter === ALL_PRODUCTS_ID
-      ? products
-      : products.filter((p) => p.category === activeFilter);
+      ? bySearch
+      : bySearch.filter((p) => p.category === activeFilter);
 
   return (
     <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl">

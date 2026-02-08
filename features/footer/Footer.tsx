@@ -34,7 +34,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <div className="md:col-span-3">
+          {/* <div className="md:col-span-3">
             <h4 className="font-bold mb-6 text-slate-900 dark:text-white uppercase tracking-wider text-sm">
               Navegación
             </h4>
@@ -52,8 +52,8 @@ export function Footer() {
                 Preguntas Frecuentes
               </li>
             </ul>
-          </div>
-          <div className="md:col-span-5 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
+          </div> */}
+          {/* <div className="md:col-span-5 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm">
             <h4 className="font-bold mb-2 text-slate-900 dark:text-white">
               Suscribite a las novedades
             </h4>
@@ -73,7 +73,7 @@ export function Footer() {
                 SUSCRIBIRME
               </button>
             </form>
-          </div>
+          </div> */}
         </div>
         <div className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
           <p>© 2024 Mercado del Emprendedor. Hecho con ❤️ para la comunidad de emprendedores.</p>
