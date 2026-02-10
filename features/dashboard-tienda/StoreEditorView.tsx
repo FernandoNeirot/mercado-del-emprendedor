@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@/shared/components/Icon";
 import type { StoreTab } from "@/features/tienda/components/StoreTabs";
 import type { StoreVendor, StoreProduct } from "@/features/tienda";
-import { createStore, updateStore } from "@/lib/server-actions";
+import { createStore, updateStore, uploadStoreImage } from "@/lib/server-actions";
 import { StoreEditorHeader } from "./components/StoreEditorHeader";
 import { StoreEditorTabHistoria } from "./components/StoreEditorTabHistoria";
 import { StoreEditorTabInformacion } from "./components/StoreEditorTabInformacion";
@@ -46,8 +46,13 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<StoreTab>("catalogo");
   const [form, setForm] = useState<StoreFormState>(() => storeToFormState(store));
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
 
   const isCreating = !store?.id;
+
+  /** Carpeta en Storage = tienda/{id} (id de la tienda, no el nombre). */
+  const storeFolder = store?.id ? `tienda/${store.id}` : null;
 
   const handleChange = (updates: Partial<StoreFormState>) => {
     setForm((prev) => ({ ...prev, ...updates }));
@@ -57,29 +62,77 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
     e.preventDefault();
     startTransition(async () => {
       try {
+        let payload = { ...form };
+
         if (isCreating) {
           const defaults = getDefaultStoreForm();
-          const payload = {
+          const createPayload = {
             ...defaults,
-            ...form,
-            name: form.name || defaults.name,
-            slug: form.slug || defaults.slug,
-            tagline: form.tagline || defaults.tagline,
-            stats: form.stats ?? defaults.stats,
+            ...payload,
+            name: payload.name || defaults.name,
+            slug: payload.slug || defaults.slug,
+            tagline: payload.tagline || defaults.tagline,
+            stats: payload.stats ?? defaults.stats,
           };
           const created = await createStore({
-            ...payload,
+            ...createPayload,
             createdAt: new Date(),
           });
+
+          const updates: { logoUrl?: string; bannerUrl?: string } = {};
+          if (logoFile) {
+            const formData = new FormData();
+            formData.append("image", logoFile);
+            formData.append("folder", `tienda/${created.id}`);
+            formData.append("fileName", "logo.webp");
+            const { url } = await uploadStoreImage(formData);
+            setLogoFile(null);
+            updates.logoUrl = url;
+          }
+          if (bannerFile) {
+            const formData = new FormData();
+            formData.append("image", bannerFile);
+            formData.append("folder", `tienda/${created.id}`);
+            formData.append("fileName", "banner-principal.webp");
+            const { url } = await uploadStoreImage(formData);
+            setBannerFile(null);
+            updates.bannerUrl = url;
+          }
+          if (Object.keys(updates).length > 0) {
+            await updateStore(created.slug, updates);
+          }
+
           router.replace(`/dashboard/tienda/${created.slug}`);
           return;
         }
-        const updated = await updateStore(currentSlug, form);
+
+        if (logoFile && storeFolder) {
+          const formData = new FormData();
+          formData.append("image", logoFile);
+          formData.append("folder", storeFolder);
+          formData.append("fileName", "logo.webp");
+          const { url } = await uploadStoreImage(formData);
+          setLogoFile(null);
+          payload = { ...payload, logoUrl: url };
+        }
+        if (bannerFile && storeFolder) {
+          const formData = new FormData();
+          formData.append("image", bannerFile);
+          formData.append("folder", storeFolder);
+          formData.append("fileName", "banner-principal.webp");
+          const { url } = await uploadStoreImage(formData);
+          setBannerFile(null);
+          payload = { ...payload, bannerUrl: url };
+        }
+
+        const updated = await updateStore(currentSlug, payload);
+        setForm((prev) => ({ ...prev, ...updated }));
         if (updated.slug && updated.slug !== currentSlug) {
           router.replace(`/dashboard/tienda/${updated.slug}`);
-        } else {
-          router.refresh();
         }
+        // No hacer router.refresh() cuando el slug no cambia: la caché devolvería
+        // la tienda antigua y la preview del logo volvería a la imagen anterior.
+        // El estado del formulario ya tiene los datos actualizados (setForm(updated)).
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error al guardar";
         alert(message);
@@ -102,6 +155,12 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
             form={form}
             onChange={handleChange}
             isCreating={isCreating}
+            logoFile={logoFile}
+            onLogoFileChange={setLogoFile}
+            initialLogoUrl={store?.logoUrl}
+            bannerFile={bannerFile}
+            onBannerFileChange={setBannerFile}
+            initialBannerUrl={store?.bannerUrl}
           />
 
           <nav

@@ -2,6 +2,7 @@
 
 import { cache } from "react";
 import type { StoreVendor } from "@/features/tienda";
+import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
 import { CACHE_REVALIDATE_24H } from "./constants";
 
 const baseUrl = () => process.env.NEXT_PUBLIC_BASE_URL;
@@ -54,4 +55,32 @@ export async function updateStore(
   const json = await res.json();
   if (!res.ok) throw new Error(json.error ?? "Error al actualizar la tienda");
   return json.data as StoreVendor;
+}
+
+/** Sube y optimiza una imagen (WebP) para la tienda. Carpeta en Storage = tienda/{id}. Siempre guarda como logo.webp para pisar la anterior. */
+export async function uploadStoreImage(
+  formData: FormData
+): Promise<{ url: string }> {
+  const file = formData.get("image") as File | null;
+  const folder = (formData.get("folder") as string) || "tienda";
+  const fileName = (formData.get("fileName") as string) || "logo.webp";
+
+  if (!file || !(file instanceof File) || file.size === 0) {
+    throw new Error("No se proporcionó ninguna imagen");
+  }
+
+  if (!file.type.startsWith("image/")) {
+    throw new Error("El archivo debe ser una imagen");
+  }
+
+  const arrayBuffer = await file.arrayBuffer();
+  const imageBuffer = Buffer.from(arrayBuffer);
+
+  const result = await optimizeAndUploadImage(imageBuffer, {
+    folder,
+    fileName,
+    quality: 80,
+  });
+
+  return { url: result.url };
 }

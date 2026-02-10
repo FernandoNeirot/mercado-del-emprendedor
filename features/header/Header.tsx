@@ -54,7 +54,8 @@ export function Header({
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const isTiendaPage = pathname?.startsWith("/tienda") ?? false;
-  const showLocation = !hideLocation && !isTiendaPage;
+  const isPrivatePage = pathname?.startsWith("/dashboard") ?? false;
+  const showLocation = !hideLocation && !isTiendaPage && !isPrivatePage;
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
 
@@ -87,9 +88,9 @@ export function Header({
 
   const handleProfileClick = () => {
     if (user) {
-      alert("Ya estás logueado");
+      router.push("/dashboard");
     } else {
-      setAuthOpen(true);
+      setAuthOpen(true);      
     }
   };
 
@@ -132,11 +133,13 @@ export function Header({
               />
             </div>
           )}
+          {!isPrivatePage && (
           <SearchBar
             onSearch={handleSearch}
             placeholder="Buscar..."
-            value={isTiendaPage ? tiendaSearch : undefined}
+            value={isTiendaPage ? tiendaSearch : ""}
           />
+          )}
         </div>
       </div>
 
@@ -154,22 +157,24 @@ export function Header({
                   variant="button"
                 />
               </div>
-            )}
-            <div className="flex-1 flex items-center max-w-xs lg:max-w-md mx-2 lg:mx-4 min-w-0">
-              <div className="relative w-full">
-                <Icon
-                  name="search"
-                  className="absolute mt-2 inset-y-0 left-0 pl-3 lg:pl-4 flex items-center pointer-events-none text-slate-400 text-lg lg:text-xl"
+              )}
+              {!isPrivatePage && (
+              <div className="flex-1 flex items-center max-w-xs lg:max-w-md mx-2 lg:mx-4 min-w-0">
+                <div className="relative w-full">
+                  <Icon
+                    name="search"
+                    className="absolute mt-2 inset-y-0 left-0 pl-3 lg:pl-4 flex items-center pointer-events-none text-slate-400 text-lg lg:text-xl"
                   />
-                <input
-                  type="text"
-                  className="block w-full pl-9 lg:pl-11 pr-3 lg:pr-4 py-2 lg:py-2.5 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-xs lg:text-sm focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder="Buscar..."
-                  value={isTiendaPage ? tiendaSearch : undefined}
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
+                  <input
+                    type="text"
+                    className="block w-full pl-9 lg:pl-11 pr-3 lg:pr-4 py-2 lg:py-2.5 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-xs lg:text-sm focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="Buscar..."
+                    value={isTiendaPage ? tiendaSearch : ""}
+                    onChange={(e) => handleSearch(e.target.value)}
+                  />
+                </div>
               </div>
-                  </div>
+              )}
             </div>         
             <div className="flex items-center gap-0.5 lg:gap-1 shrink-0">
               <button

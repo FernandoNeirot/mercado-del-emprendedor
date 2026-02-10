@@ -21,7 +21,7 @@ export async function uploadAndOptimizeImage(
     formData.append("image", file);
 
     const url = new URL(
-      "/api/product/images",
+      "/api/images",
       typeof window !== "undefined" ? window.location.origin : ""
     );
     if (folder) url.searchParams.set("folder", folder);
