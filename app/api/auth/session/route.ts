@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getAuth } from "firebase-admin/auth";
 import { initializeAdminApp } from "@/shared/configs/firebase-admin";
-import { setAuthCookies } from "../utils";
+import {
+  setAuthCookies,
+  SESSION_COOKIE_NAME,
+  decodeSessionPayload,
+} from "../utils";
 
 const FIREBASE_TOKEN_URL = "https://securetoken.googleapis.com/v1/token";
 
@@ -18,12 +22,16 @@ interface FirebaseTokenResponse {
  * GET /api/auth/session
  * Devuelve el usuario actual si está autenticado.
  * Si el session_token expiró pero hay refresh_token, intenta refrescar y devuelve el usuario.
+ * Usa __session (única cookie que Firebase App Hosting reenvía al servidor).
  */
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = await cookies();
-    const sessionToken = cookieStore.get("session_token")?.value;
-    const refreshToken = cookieStore.get("refresh_token")?.value;
+    const sessionPayload = decodeSessionPayload(
+      cookieStore.get(SESSION_COOKIE_NAME)?.value ?? ""
+    );
+    const sessionToken = sessionPayload?.t ?? null;
+    const refreshToken = sessionPayload?.r ?? null;
 
     const app = initializeAdminApp();
     const auth = getAuth(app);

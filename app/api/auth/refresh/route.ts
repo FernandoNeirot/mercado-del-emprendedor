@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { setAuthCookies } from "../utils";
+import { SESSION_COOKIE_NAME, decodeSessionPayload } from "../utils";
 
 const FIREBASE_TOKEN_URL = "https://securetoken.googleapis.com/v1/token";
 
@@ -14,13 +15,16 @@ interface FirebaseTokenResponse {
 
 /**
  * POST /api/auth/refresh
- * Refresca el idToken usando el refresh_token guardado en cookies.
- * Debe llamarse cuando el session_token expire.
+ * Refresca el idToken usando el refresh_token guardado en __session.
+ * Firebase App Hosting solo reenvía la cookie __session al servidor.
  */
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refresh_token")?.value;
+    const sessionPayload = decodeSessionPayload(
+      cookieStore.get(SESSION_COOKIE_NAME)?.value ?? ""
+    );
+    const refreshToken = sessionPayload?.r ?? null;
 
     if (!refreshToken) {
       return NextResponse.json(

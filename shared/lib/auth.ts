@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import { getAuth } from "firebase-admin/auth";
 import { initializeAdminApp } from "../configs/firebase-admin";
+import {
+  SESSION_COOKIE_NAME,
+  decodeSessionPayload,
+} from "@/app/api/auth/utils";
 
 interface FirebaseJWTPayload {
   sub?: string;
@@ -43,10 +47,17 @@ function decodeJWT(token: string): FirebaseJWTPayload | null {
   }
 }
 
+function getSessionTokenFromCookies(cookieStore: Awaited<ReturnType<typeof cookies>>): string | null {
+  const raw = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (!raw) return null;
+  const decoded = decodeSessionPayload(raw);
+  return decoded?.t ?? null;
+}
+
 export async function getUserIdFromSession(): Promise<string | null> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get("session_token")?.value;
+    const token = getSessionTokenFromCookies(cookieStore);
 
     if (!token) {
       return null;
@@ -68,7 +79,7 @@ export async function getUserIdFromSession(): Promise<string | null> {
 export async function getSessionToken(): Promise<string | null> {
   try {
     const cookieStore = await cookies();
-    return cookieStore.get("session_token")?.value || null;
+    return getSessionTokenFromCookies(cookieStore);
   } catch (error) {
     console.error("[getSessionToken] Error obteniendo token:", error);
     return null;
