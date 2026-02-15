@@ -1,3 +1,11 @@
+/** Ensures the base URL has a scheme (https://) for use with new URL() and metadata. */
+function ensureUrlWithScheme(url: string): string {
+  const trimmed = url.replace(/\/$/, "");
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+}
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ||
@@ -20,9 +28,9 @@ export const TWITTER_HANDLE = "@MercadoDelEmprendedor";
 
 export function getBaseUrl(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "");
+    return ensureUrlWithScheme(process.env.NEXT_PUBLIC_BASE_URL);
   }
-  return BASE_URL.replace(/\/$/, "");
+  return ensureUrlWithScheme(BASE_URL);
 }
 
 export function canonicalUrl(path: string): string {
