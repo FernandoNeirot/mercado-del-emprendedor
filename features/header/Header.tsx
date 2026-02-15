@@ -58,7 +58,7 @@ export function Header({
   const showLocation = !hideLocation && !isTiendaPage && !isPrivatePage;
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
-
+  console.log("user", user);
   const buscarFromUrl = searchParams?.get("buscar") ?? "";
   const [tiendaSearch, setTiendaSearch] = useState(buscarFromUrl);
   useEffect(() => {

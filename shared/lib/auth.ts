@@ -89,7 +89,7 @@ export async function getSessionToken(): Promise<string | null> {
 export async function getServerUser(): Promise<ServerUser | null> {
   try {
     const token = await getSessionToken();
-
+    console.log("token", token);
     if (!token) {
       return null;
     }
