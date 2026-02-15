@@ -14,7 +14,7 @@ export function initializeAdminApp(): App {
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
   if (!projectId || !storageBucket) {
     throw new Error(
@@ -22,19 +22,30 @@ export function initializeAdminApp(): App {
     );
   }
 
+  // Normalizar PRIVATE_KEY: Secret Manager puede devolver \n como literal "\\n".
+  // Si viene en Base64 (sin -----BEGIN), decodificar primero.
+  if (clientEmail && privateKey) {
+    if (!privateKey.includes("-----BEGIN")) {
+      try {
+        privateKey = Buffer.from(privateKey, "base64").toString("utf-8");
+      } catch {
+        /* ignorar, usar tal cual */
+      }
+    }
+    privateKey = privateKey
+      .split(String.raw`\n`)
+      .join("\n")
+      .replace(/\\\\n/g, "\n")
+      .replace(/\\n/g, "\n");
+  }
+
   if (clientEmail && privateKey) {
     try {
-      // Firebase/Secret Manager pueden guardar \n como "\\n" (literal) o de otras formas.
-      // Normalizar todos los formatos a saltos de línea reales para evitar DECODER routines::unsupported.
-      const normalizedKey = privateKey
-        .replace(/\\\\n/g, "\n")   // doble escape (ej. desde JSON)
-        .replace(/\\n/g, "\n");    // escape simple
-
       adminApp = initializeApp({
         credential: cert({
           projectId,
           clientEmail,
-          privateKey: normalizedKey,
+          privateKey,
         }),
         storageBucket,
       });
