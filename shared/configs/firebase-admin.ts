@@ -24,11 +24,17 @@ export function initializeAdminApp(): App {
 
   if (clientEmail && privateKey) {
     try {
+      // Firebase/Secret Manager pueden guardar \n como "\\n" (literal) o de otras formas.
+      // Normalizar todos los formatos a saltos de línea reales para evitar DECODER routines::unsupported.
+      const normalizedKey = privateKey
+        .replace(/\\\\n/g, "\n")   // doble escape (ej. desde JSON)
+        .replace(/\\n/g, "\n");    // escape simple
+
       adminApp = initializeApp({
         credential: cert({
           projectId,
           clientEmail,
-          privateKey: privateKey.replace(/\\n/g, "\n"),
+          privateKey: normalizedKey,
         }),
         storageBucket,
       });
