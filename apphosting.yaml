@@ -1,23 +1,35 @@
 kind: "AppStack"
 
 env:
+  # 1. Nombre de la variable en tu código
+  # 2. NOMBRE EXACTO del secreto en Google Cloud
+  
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    secret: "TU_API_KEY_AQUI"
+    secret: FIREBASE_API_KEY
+
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    secret: "TU_PROJECT.firebaseapp.com"
+    secret: FIREBASE_AUTH_DOMAIN
+
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    secret: "TU_PROJECT_ID"
+    secret: FIREBASE_PROJECT_ID
+
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    secret: "TU_PROJECT.appspot.com"
+    secret: FIREBASE_STORAGE_BUCKET
+
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    secret: "TU_SENDER_ID"
+    secret: FIREBASE_MESSAGING_SENDER_ID
+
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    secret: "TU_APP_ID"
+    secret: FIREBASE_APP_ID
+
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    secret: "TU_MEASUREMENT_ID"
+    secret: FIREBASE_MEASUREMENT_ID
+
   - variable: NEXT_PUBLIC_BASE_URL
-    secret: "https://tu-dominio.com"
+    secret: BASE_URL
+
   - variable: FIREBASE_CLIENT_EMAIL
-    secret: "tu-servicio@proyecto.iam.gserviceaccount.com"
+    secret: CLIENT_EMAIL
+
   - variable: FIREBASE_PRIVATE_KEY
-    secret: FIREBASE_PRIVATE_KEY_SECRET
+    secret: PRIVATE_KEY
