@@ -9,6 +9,8 @@ export interface AuthUser {
   uid: string;
   email: string | null;
   displayName?: string | null;
+  /** Si el usuario confirmó su correo (verificación por email). */
+  emailVerified?: boolean;
 }
 
 export type AuthResult = { user: AuthUser } | { error: string };
@@ -50,6 +52,11 @@ export async function register(
   if (!response.ok) {
     return { error: data.error ?? "Error al registrarse" };
   }
+  // Enviar correo de verificación vía Firebase Client (solo en navegador)
+  const sendError = await sendEmailVerificationAfterRegister(email, password);
+  if (sendError) {
+    return { error: sendError };
+  }
   return {
     user: {
       uid: data.localId,
@@ -57,6 +64,45 @@ export async function register(
       displayName: data.displayName ?? null,
     },
   };
+}
+
+/**
+ * Envía (o reenvía) el correo de verificación de Firebase al usuario.
+ * Hace sign-in en el cliente con email/password y llama a sendEmailVerification.
+ * @returns Mensaje de error o null si se envió correctamente.
+ */
+export async function sendVerificationEmail(
+  email: string,
+  password: string
+): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  try {
+    const { signInWithEmailAndPassword, sendEmailVerification } = await import(
+      "firebase/auth"
+    );
+    const { auth } = await import("@/shared/configs/firebase");
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const continueUrl = `${window.location.origin}/dashboard`;
+    await sendEmailVerification(userCredential.user, {
+      url: continueUrl,
+      handleCodeInApp: false,
+    });
+    return null;
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "No se pudo enviar el correo de verificación";
+    return message;
+  }
+}
+
+/**
+ * Usado internamente después del registro. Reutiliza sendVerificationEmail.
+ */
+async function sendEmailVerificationAfterRegister(
+  email: string,
+  password: string
+): Promise<string | null> {
+  return sendVerificationEmail(email, password);
 }
 
 /**

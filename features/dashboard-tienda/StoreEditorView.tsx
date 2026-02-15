@@ -80,7 +80,9 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
           });
 
           const updates: { logoUrl?: string; bannerUrl?: string } = {};
-          if (logoFile) {
+          const hasNewLogo = logoFile && logoFile instanceof File && logoFile.size > 0;
+          const hasNewBanner = bannerFile && bannerFile instanceof File && bannerFile.size > 0;
+          if (hasNewLogo) {
             const formData = new FormData();
             formData.append("image", logoFile);
             formData.append("folder", `tienda/${created.id}`);
@@ -89,7 +91,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
             setLogoFile(null);
             updates.logoUrl = url;
           }
-          if (bannerFile) {
+          if (hasNewBanner) {
             const formData = new FormData();
             formData.append("image", bannerFile);
             formData.append("folder", `tienda/${created.id}`);
@@ -106,7 +108,11 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
           return;
         }
 
-        if (logoFile && storeFolder) {
+        // Solo subir al storage si el usuario eligió un archivo nuevo; si no, conservar las URLs actuales.
+        const hasNewLogo = logoFile && logoFile instanceof File && logoFile.size > 0;
+        const hasNewBanner = bannerFile && bannerFile instanceof File && bannerFile.size > 0;
+
+        if (hasNewLogo && storeFolder) {
           const formData = new FormData();
           formData.append("image", logoFile);
           formData.append("folder", storeFolder);
@@ -115,7 +121,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
           setLogoFile(null);
           payload = { ...payload, logoUrl: url };
         }
-        if (bannerFile && storeFolder) {
+        if (hasNewBanner && storeFolder) {
           const formData = new FormData();
           formData.append("image", bannerFile);
           formData.append("folder", storeFolder);
@@ -127,12 +133,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
 
         const updated = await updateStore(currentSlug, payload);
         setForm((prev) => ({ ...prev, ...updated }));
-        if (updated.slug && updated.slug !== currentSlug) {
-          router.replace(`/dashboard/tienda/${updated.slug}`);
-        }
-        // No hacer router.refresh() cuando el slug no cambia: la caché devolvería
-        // la tienda antigua y la preview del logo volvería a la imagen anterior.
-        // El estado del formulario ya tiene los datos actualizados (setForm(updated)).
+          router.replace("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error al guardar";
         alert(message);

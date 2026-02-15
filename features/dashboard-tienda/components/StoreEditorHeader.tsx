@@ -230,9 +230,6 @@ export function StoreEditorHeader({
                 </div>
               )}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Se guarda como banner-principal.webp (reemplaza el anterior).
-            </p>
           </div>
         </div>
       </div>

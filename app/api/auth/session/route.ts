@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
             uid: user.uid,
             email: user.email ?? null,
             displayName: user.displayName ?? null,
+            emailVerified: user.emailVerified ?? false,
           },
         });
       } catch (error: unknown) {
@@ -87,6 +88,7 @@ export async function GET(request: NextRequest) {
         uid: user.uid,
         email: user.email ?? null,
         displayName: user.displayName ?? null,
+        emailVerified: user.emailVerified ?? false,
       },
     });
 

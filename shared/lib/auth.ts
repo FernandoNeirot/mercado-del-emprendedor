@@ -14,6 +14,8 @@ export interface ServerUser {
   uid: string;
   displayName: string | null;
   email: string | null;
+  /** Si el usuario confirmó su correo (verificación por email). */
+  emailVerified: boolean;
 }
 
 function decodeJWT(token: string): FirebaseJWTPayload | null {
@@ -99,6 +101,7 @@ export async function getServerUser(): Promise<ServerUser | null> {
         uid: user.uid,
         displayName: user.displayName || null,
         email: user.email || null,
+        emailVerified: user.emailVerified ?? false,
       };
     } catch (error: unknown) {
       const errorMessage =
