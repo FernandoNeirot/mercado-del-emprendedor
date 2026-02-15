@@ -1,35 +1,36 @@
 kind: "AppStack"
 
 env:
-  # 1. Nombre de la variable en tu código
-  # 2. NOMBRE EXACTO del secreto en Google Cloud
   
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     secret: FIREBASE_API_KEY
+    availability: ["BUILD", "RUNTIME"]
 
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    secret: FIREBASE_AUTH_DOMAIN
-
+    secret: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    availability: ["BUILD", "RUNTIME"]
+      
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
     secret: FIREBASE_PROJECT_ID
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
     secret: FIREBASE_STORAGE_BUCKET
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
     secret: FIREBASE_MESSAGING_SENDER_ID
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
     secret: FIREBASE_APP_ID
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
     secret: FIREBASE_MEASUREMENT_ID
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: NEXT_PUBLIC_BASE_URL
     secret: BASE_URL
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: FIREBASE_CLIENT_EMAIL
     secret: CLIENT_EMAIL
-
+    availability: ["BUILD", "RUNTIME"]
   - variable: FIREBASE_PRIVATE_KEY
     secret: PRIVATE_KEY
+    availability: ["BUILD", "RUNTIME"]
