@@ -98,16 +98,18 @@ export async function getServerUser(): Promise<ServerUser | null> {
     let app;
     try {
       app = initializeAdminApp();
+      console.log("app paso");
     } catch (initError) {
       console.error("[getServerUser] Firebase Admin no disponible (revisa FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY):", initError);
       return null;
     }
     const auth = getAuth(app);
-
+    console.log("auth paso");
     try {
       const decodedToken = await auth.verifyIdToken(token);
+      console.log("decodedToken paso");
       const user = await auth.getUser(decodedToken.uid);
-
+      console.log("user paso");
       return {
         uid: user.uid,
         displayName: user.displayName || null,
@@ -115,6 +117,7 @@ export async function getServerUser(): Promise<ServerUser | null> {
         emailVerified: user.emailVerified ?? false,
       };
     } catch (error: unknown) {
+      console.log("error paso", error);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
 

@@ -30,19 +30,19 @@ const defaultNavItems: NavItem[] = [
     id: "explore",
     label: "Explorar",
     icon: "explore",
-    href: "/explore",
+    href: "/",
   },
   {
     id: "favorites",
     label: "Favoritos",
     icon: "favorite",
-    href: "/favorites",
+    href: "/",
   },
   {
     id: "profile",
     label: "Perfil",
     icon: "person",
-    href: "/profile",
+    href: "/",
   },
 ];
 
