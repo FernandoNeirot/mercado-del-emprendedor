@@ -11,10 +11,24 @@ export function initializeAdminApp(): App {
     return getApps()[0]!;
   }
 
-  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  let projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
   const storageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  let clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+  // Opción: FIREBASE_SERVICE_ACCOUNT_JSON con el JSON completo (útil en Cloud Run/Secret Manager)
+  const jsonKey = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  if (jsonKey) {
+    try {
+      const parsed =
+        typeof jsonKey === "string" ? (JSON.parse(jsonKey) as Record<string, string>) : jsonKey;
+      projectId = projectId || parsed.project_id;
+      clientEmail = clientEmail || parsed.client_email;
+      privateKey = parsed.private_key ?? privateKey;
+    } catch {
+      // ignorar, usar env vars individuales
+    }
+  }
 
   if (!projectId || !storageBucket) {
     throw new Error(
@@ -22,37 +36,25 @@ export function initializeAdminApp(): App {
     );
   }
 
-  // Normalizar PRIVATE_KEY para evitar "DECODER routines::unsupported" (OpenSSL).
-  // En Cloud Run/Secret Manager la key puede venir con \n literal, base64, o CRLF.
+  // Normalizar PRIVATE_KEY: OpenSSL falla con "DECODER routines::unsupported" si \n es literal (barra+n) en vez de salto real.
   if (clientEmail && privateKey) {
     privateKey = privateKey.trim();
-    // Solo decodificar base64 si no es PEM (evitar corromper keys que no son base64)
+    // Si viene en base64 (sin -----BEGIN), decodificar
     if (!privateKey.includes("-----BEGIN")) {
       try {
         const decoded = Buffer.from(privateKey, "base64").toString("utf-8");
-        if (decoded.includes("-----BEGIN")) {
-          privateKey = decoded;
-        }
+        if (decoded.includes("-----BEGIN")) privateKey = decoded;
       } catch {
-        /* no es base64 válido, usar tal cual */
+        /* no es base64 */
       }
     }
-    // Unificar saltos de línea: literal \n (backslash+n), \\n, \r\n, \r → \n real
-    // Orden: doble escape primero, luego escape simple, luego CRLF/CR
+    // Crítico: en env vars \n suele venir como los 2 caracteres \ y n. OpenSSL necesita newline real.
+    // Orden: \\n (doble escape) → \n, luego \n (literal) → newline real, luego CRLF/CR.
     privateKey = privateKey
-      .replace(/\\\\n/g, "\n")
+      .replace(/\\\\n/g, "\\n")
       .replace(/\\n/g, "\n")
-      .replace(/\\r\\n/g, "\n")
-      .replace(/\\r/g, "\n")
-      .split(String.raw`\n`)
-      .join("\n")
       .replace(/\r\n/g, "\n")
       .replace(/\r/g, "\n");
-    // PEM debe tener líneas válidas; eliminar líneas vacías extra que rompen el decoder
-    privateKey = privateKey
-      .split("\n")
-      .filter((line) => line.trim().length > 0 || line.startsWith("-----"))
-      .join("\n");
   }
 
   if (clientEmail && privateKey) {
