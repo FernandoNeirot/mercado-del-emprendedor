@@ -89,35 +89,29 @@ export async function getSessionToken(): Promise<string | null> {
 export async function getServerUser(): Promise<ServerUser | null> {
   try {
     const token = await getSessionToken();
-    console.log("token", token);
     if (!token) {
       return null;
     }
 
-    // Verificar el token con Firebase Admin (puede fallar si faltan env en Vercel/producción)
     let app;
     try {
       app = initializeAdminApp();
-      console.log("app paso");
     } catch (initError) {
       console.error("[getServerUser] Firebase Admin no disponible (revisa FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY):", initError);
       return null;
     }
     const auth = getAuth(app);
-    console.log("auth paso");
     try {
       const decodedToken = await auth.verifyIdToken(token);
-      console.log("decodedToken paso");
-      const user = await auth.getUser(decodedToken.uid);
-      console.log("user paso");
+      // Construir usuario desde el token verificado; evitar auth.getUser() porque en Cloud Run
+      // esa llamada usa OAuth2 y puede fallar con "DECODER routines::unsupported" al usar la clave.
       return {
-        uid: user.uid,
-        displayName: user.displayName || null,
-        email: user.email || null,
-        emailVerified: user.emailVerified ?? false,
+        uid: decodedToken.uid,
+        displayName: decodedToken.name ?? null,
+        email: decodedToken.email ?? null,
+        emailVerified: decodedToken.email_verified ?? false,
       };
     } catch (error: unknown) {
-      console.log("error paso", error);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
 
