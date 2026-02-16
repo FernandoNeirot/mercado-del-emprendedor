@@ -22,21 +22,37 @@ export function initializeAdminApp(): App {
     );
   }
 
-  // Normalizar PRIVATE_KEY: Secret Manager puede devolver \n como literal "\\n".
-  // Si viene en Base64 (sin -----BEGIN), decodificar primero.
+  // Normalizar PRIVATE_KEY para evitar "DECODER routines::unsupported" (OpenSSL).
+  // En Cloud Run/Secret Manager la key puede venir con \n literal, base64, o CRLF.
   if (clientEmail && privateKey) {
+    privateKey = privateKey.trim();
+    // Solo decodificar base64 si no es PEM (evitar corromper keys que no son base64)
     if (!privateKey.includes("-----BEGIN")) {
       try {
-        privateKey = Buffer.from(privateKey, "base64").toString("utf-8");
+        const decoded = Buffer.from(privateKey, "base64").toString("utf-8");
+        if (decoded.includes("-----BEGIN")) {
+          privateKey = decoded;
+        }
       } catch {
-        /* ignorar, usar tal cual */
+        /* no es base64 válido, usar tal cual */
       }
     }
+    // Unificar saltos de línea: literal \n (backslash+n), \\n, \r\n, \r → \n real
+    // Orden: doble escape primero, luego escape simple, luego CRLF/CR
     privateKey = privateKey
+      .replace(/\\\\n/g, "\n")
+      .replace(/\\n/g, "\n")
+      .replace(/\\r\\n/g, "\n")
+      .replace(/\\r/g, "\n")
       .split(String.raw`\n`)
       .join("\n")
-      .replace(/\\\\n/g, "\n")
-      .replace(/\\n/g, "\n");
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n");
+    // PEM debe tener líneas válidas; eliminar líneas vacías extra que rompen el decoder
+    privateKey = privateKey
+      .split("\n")
+      .filter((line) => line.trim().length > 0 || line.startsWith("-----"))
+      .join("\n");
   }
 
   if (clientEmail && privateKey) {
