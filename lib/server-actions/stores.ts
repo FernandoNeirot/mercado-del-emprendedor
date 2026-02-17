@@ -1,6 +1,7 @@
 "use server";
 
 import { cache } from "react";
+import { cookies } from "next/headers";
 import type { StoreVendor } from "@/features/tienda";
 import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
 import { getBaseUrl } from "@/shared/configs/seo";
@@ -15,10 +16,13 @@ export const getStoreById = cache(async (id: string): Promise<StoreVendor | null
   return (storeData.data as StoreVendor) ?? null;
 });
 
-/** Lista todas las tiendas (para el dashboard). */
+/** Lista las tiendas del usuario autenticado (para el dashboard). */
 export async function getStores(): Promise<StoreVendor[]> {
-  const res = await fetch(`${getBaseUrl()}/api/stores`, {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const res = await fetch(`${getBaseUrl()}/api/my-stores`, {
     method: "GET",
+    headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
     next: { revalidate: 60 },
   });
   const json = await res.json();
@@ -29,11 +33,16 @@ export async function getStores(): Promise<StoreVendor[]> {
 
 /** Crea una tienda. Devuelve la tienda con id asignado o lanza. */
 export async function createStore(
-  data: Omit<StoreVendor, "id" | "createdAt"> & { createdAt?: Date }
+  data: Omit<StoreVendor, "id" | "createdAt" | "userId"> & { createdAt?: Date }
 ): Promise<StoreVendor> {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
   const res = await fetch(`${getBaseUrl()}/api/stores`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+    },
     body: JSON.stringify(data),
   });
   const json = await res.json();
@@ -44,11 +53,16 @@ export async function createStore(
 /** Actualiza una tienda por slug (ej. feni-indumentaria-infantil). */
 export async function updateStore(
   slug: string,
-  data: Partial<Omit<StoreVendor, "id" | "createdAt">>
+  data: Partial<Omit<StoreVendor, "id" | "createdAt" | "userId">>
 ): Promise<StoreVendor> {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
   const res = await fetch(`${getBaseUrl()}/api/stores/${encodeURIComponent(slug)}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+    },
     body: JSON.stringify(data),
   });
   const json = await res.json();

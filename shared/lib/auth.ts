@@ -1,3 +1,4 @@
+import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { getAuth } from "firebase-admin/auth";
 import { initializeAdminApp } from "../configs/firebase-admin";
@@ -72,6 +73,28 @@ export async function getUserIdFromSession(): Promise<string | null> {
     return payload.sub || payload.user_id || payload.uid || null;
   } catch (error) {
     console.error("[getUserIdFromSession] Error obteniendo userId:", error);
+    return null;
+  }
+}
+
+/**
+ * Obtiene el UID del usuario autenticado desde la cookie de la request.
+ * Usado en API routes que reciben fetch con Cookie header.
+ */
+export async function getUidFromRequest(request: NextRequest): Promise<string | null> {
+  try {
+    const cookieHeader = request.headers.get("cookie") ?? "";
+    const match = cookieHeader.match(new RegExp(`${SESSION_COOKIE_NAME}=([^;]+)`));
+    const raw = match?.[1] ? decodeURIComponent(match[1]) : null;
+    if (!raw) return null;
+    const payload = decodeSessionPayload(raw);
+    const token = payload?.t ?? null;
+    if (!token) return null;
+    const app = initializeAdminApp();
+    const auth = getAuth(app);
+    const decodedToken = await auth.verifyIdToken(token);
+    return decodedToken.uid;
+  } catch {
     return null;
   }
 }

@@ -1,5 +1,6 @@
-import { getAdminFirestore } from '@/shared/configs/firebase-admin';
-import { NextRequest, NextResponse } from 'next/server';
+import { getAdminFirestore } from "@/shared/configs/firebase-admin";
+import { NextRequest, NextResponse } from "next/server";
+import { getUidFromRequest } from "@/shared/lib/auth";
 
 export async function GET(request: NextRequest) {
     try {
@@ -54,8 +55,26 @@ export async function PATCH(
       );
     }
 
+    const uid = await getUidFromRequest(request);
+    if (!uid) {
+      return NextResponse.json(
+        { data: null, error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
+    const storeData = doc.data();
+    const storeUserId = storeData?.userId;
+    // Si la tienda tiene userId, verificar que sea del usuario actual
+    if (storeUserId && storeUserId !== uid) {
+      return NextResponse.json(
+        { data: null, error: "No tenés permiso para editar esta tienda" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
-    const { id: _omit, ...updateData } = body;
+    const { id: _omit, userId: _omitUid, ...updateData } = body;
     await doc.ref.update(updateData);
 
     return NextResponse.json(

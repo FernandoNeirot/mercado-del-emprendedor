@@ -42,6 +42,7 @@ export interface StoreAvailability {
 }
 export interface StoreVendor {
   id: string;
+  userId?: string;
   slug: string;
   category: string;  
   isActive: boolean;
