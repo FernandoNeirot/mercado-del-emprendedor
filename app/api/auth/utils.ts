@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
  */
 export const SESSION_COOKIE_NAME = "__session";
 
-const COOKIE_OPTIONS = {
+export const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
@@ -54,7 +54,7 @@ export function setAuthCookies(
   };
   response.cookies.set(SESSION_COOKIE_NAME, encodeSessionPayload(payload), {
     ...COOKIE_OPTIONS,
-    maxAge: REFRESH_MAX_AGE, // Dura lo mismo que el refresh para mantener la sesión
+    maxAge: REFRESH_MAX_AGE,
   });
 }
 

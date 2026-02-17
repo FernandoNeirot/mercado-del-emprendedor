@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/providers/ThemeProvider";
-import { JsonLd } from "@/shared/components";
+import { JsonLd, EmailVerificationHandler } from "@/shared/components";
 import { getDefaultStructuredData } from "@/shared/lib/structured-data";
 import {
   getBaseUrl,
@@ -113,6 +114,9 @@ export default function RootLayout({
         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         <ThemeProvider>
+          <Suspense fallback={null}>
+            <EmailVerificationHandler />
+          </Suspense>
           {children}
         </ThemeProvider>
       </body>

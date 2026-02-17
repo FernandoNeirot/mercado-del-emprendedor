@@ -36,17 +36,16 @@ export async function GET(request: NextRequest) {
     const app = initializeAdminApp();
     const auth = getAuth(app);
 
-    // 1. Si hay session_token válido, verificar y devolver usuario
+    // 1. Si hay session_token válido, verificar y devolver usuario (desde token para evitar auth.getUser en Cloud Run)
     if (sessionToken) {
       try {
         const decodedToken = await auth.verifyIdToken(sessionToken);
-        const user = await auth.getUser(decodedToken.uid);
         return NextResponse.json({
           user: {
-            uid: user.uid,
-            email: user.email ?? null,
-            displayName: user.displayName ?? null,
-            emailVerified: user.emailVerified ?? false,
+            uid: decodedToken.uid,
+            email: decodedToken.email ?? null,
+            displayName: decodedToken.name ?? null,
+            emailVerified: decodedToken.email_verified ?? false,
           },
         });
       } catch (error: unknown) {
@@ -89,21 +88,20 @@ export async function GET(request: NextRequest) {
     }
 
     const decodedToken = await auth.verifyIdToken(data.id_token);
-    const user = await auth.getUser(decodedToken.uid);
 
     const response = NextResponse.json({
       user: {
-        uid: user.uid,
-        email: user.email ?? null,
-        displayName: user.displayName ?? null,
-        emailVerified: user.emailVerified ?? false,
+        uid: decodedToken.uid,
+        email: decodedToken.email ?? null,
+        displayName: decodedToken.name ?? null,
+        emailVerified: decodedToken.email_verified ?? false,
       },
     });
 
     setAuthCookies(response, data.id_token, data.refresh_token, {
-      uid: user.uid,
-      email: user.email ?? null,
-      displayName: user.displayName ?? null,
+      uid: decodedToken.uid,
+      email: decodedToken.email ?? null,
+      displayName: decodedToken.name ?? null,
     });
 
     return response;
