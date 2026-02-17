@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Logo } from "./components/Logo";
 import { SearchBar } from "./components/SearchBar";
@@ -58,7 +59,6 @@ export function Header({
   const showLocation = !hideLocation && !isTiendaPage && !isPrivatePage;
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
-  console.log("user", user);
   const buscarFromUrl = searchParams?.get("buscar") ?? "";
   const [tiendaSearch, setTiendaSearch] = useState(buscarFromUrl);
   useEffect(() => {
@@ -87,11 +87,7 @@ export function Header({
   }, []);
 
   const handleProfileClick = () => {
-    if (user) {
-      router.push("/dashboard");
-    } else {
-      setAuthOpen(true);      
-    }
+    if (!user) setAuthOpen(true);
   };
 
   const isDark = theme === "dark";
@@ -114,13 +110,24 @@ export function Header({
                 />
               )}
             </button>
-            <button
-              onClick={handleProfileClick}
-              className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-              title="Mi Perfil"
-            >
-              <Icon name="person" className="text-xl" />
-            </button>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                title="Mi Perfil"
+                prefetch
+              >
+                <Icon name="person" className="text-xl" />
+              </Link>
+            ) : (
+              <button
+                onClick={handleProfileClick}
+                className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                title="Mi Perfil"
+              >
+                <Icon name="person" className="text-xl" />
+              </button>
+            )}
           </div>
         </div>
         <div className="px-4 pb-3 gap-2 block min-[360px]:flex">
@@ -189,14 +196,25 @@ export function Header({
                   />
                 )}
               </button>
-              <button
-                onClick={handleProfileClick}
-                className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                suppressHydrationWarning
-                title="Mi Perfil"
-              >
-                <Icon name="person" className="text-lg lg:text-xl" />
-              </button>
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                  title="Mi Perfil"
+                  prefetch
+                >
+                  <Icon name="person" className="text-lg lg:text-xl" />
+                </Link>
+              ) : (
+                <button
+                  onClick={handleProfileClick}
+                  className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                  suppressHydrationWarning
+                  title="Mi Perfil"
+                >
+                  <Icon name="person" className="text-lg lg:text-xl" />
+                </button>
+              )}
             </div>
           </div>
         </div>
