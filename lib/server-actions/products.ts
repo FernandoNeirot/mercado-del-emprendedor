@@ -2,14 +2,13 @@
 
 import { cache } from "react";
 import type { StoreProduct } from "@/features/tienda";
+import { getBaseUrl } from "@/shared/configs/seo";
 import { CACHE_REVALIDATE_24H } from "./constants";
-
-const baseUrl = () => process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getProductsByStoreId = cache(
   async (storeId: string): Promise<StoreProduct[]> => {
     const productsResponse = await fetch(
-      `${baseUrl()}/api/products/byStore/${storeId}`,
+      `${getBaseUrl()}/api/products/byStore/${storeId}`,
       { method: "GET", next: { revalidate: CACHE_REVALIDATE_24H } }
     );
     const productsData = await productsResponse.json();

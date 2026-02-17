@@ -3,12 +3,11 @@
 import { cache } from "react";
 import type { StoreVendor } from "@/features/tienda";
 import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
+import { getBaseUrl } from "@/shared/configs/seo";
 import { CACHE_REVALIDATE_24H } from "./constants";
 
-const baseUrl = () => process.env.NEXT_PUBLIC_BASE_URL;
-
 export const getStoreById = cache(async (id: string): Promise<StoreVendor | null> => {
-  const storeResponse = await fetch(`${baseUrl()}/api/stores/${id}`, {
+  const storeResponse = await fetch(`${getBaseUrl()}/api/stores/${id}`, {
     method: "GET",
     next: { revalidate: CACHE_REVALIDATE_24H },
   });
@@ -18,7 +17,7 @@ export const getStoreById = cache(async (id: string): Promise<StoreVendor | null
 
 /** Lista todas las tiendas (para el dashboard). */
 export async function getStores(): Promise<StoreVendor[]> {
-  const res = await fetch(`${baseUrl()}/api/stores`, {
+  const res = await fetch(`${getBaseUrl()}/api/stores`, {
     method: "GET",
     next: { revalidate: 60 },
   });
@@ -32,7 +31,7 @@ export async function getStores(): Promise<StoreVendor[]> {
 export async function createStore(
   data: Omit<StoreVendor, "id" | "createdAt"> & { createdAt?: Date }
 ): Promise<StoreVendor> {
-  const res = await fetch(`${baseUrl()}/api/stores`, {
+  const res = await fetch(`${getBaseUrl()}/api/stores`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -47,7 +46,7 @@ export async function updateStore(
   slug: string,
   data: Partial<Omit<StoreVendor, "id" | "createdAt">>
 ): Promise<StoreVendor> {
-  const res = await fetch(`${baseUrl()}/api/stores/${encodeURIComponent(slug)}`, {
+  const res = await fetch(`${getBaseUrl()}/api/stores/${encodeURIComponent(slug)}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
