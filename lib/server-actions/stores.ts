@@ -3,6 +3,8 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import type { StoreVendor } from "@/features/tienda";
+import { getAdminFirestore } from "@/shared/configs/firebase-admin";
+import { getServerUser } from "@/shared/lib/auth";
 import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
 import { getBaseUrl } from "@/shared/configs/seo";
 import { CACHE_REVALIDATE_24H } from "./constants";
@@ -18,17 +20,30 @@ export const getStoreById = cache(async (id: string): Promise<StoreVendor | null
 
 /** Lista las tiendas del usuario autenticado (para el dashboard). */
 export async function getStores(): Promise<StoreVendor[]> {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
-  const res = await fetch(`${getBaseUrl()}/api/my-stores`, {
-    method: "GET",
-    headers: cookieHeader ? { Cookie: cookieHeader } : undefined,
-    next: { revalidate: 60 },
-  });
-  const json = await res.json();
-  if (!res.ok) return [];
-  const list = (json.data ?? []) as StoreVendor[];
-  return list;
+  const user = await getServerUser();
+  const uid = user?.uid;
+  if (!uid) return [];
+
+  try {
+    const db = getAdminFirestore();
+    const snapshot = await db
+      .collection("stores")
+      .where("userId", "==", uid)
+      .orderBy("name")
+      .get();
+
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() ?? data.createdAt,
+      } as StoreVendor;
+    });
+  } catch (error) {
+    console.error("[getStores] Error:", error);
+    return [];
+  }
 }
 
 /** Crea una tienda. Devuelve la tienda con id asignado o lanza. */

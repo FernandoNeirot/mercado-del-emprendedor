@@ -125,6 +125,9 @@ export function StoreEditorHeader({
               className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
               placeholder="feni-indumentaria-infantil"
             />
+            <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+              https://mercadodelemprendedor.com/tienda/{form.slug}
+            </span>
           </label>
         </div>
 
@@ -148,7 +151,7 @@ export function StoreEditorHeader({
                 {key === "location" && "Ubicación"}
                 {key === "clients" && "Clientes"}
                 {key === "sales" && "Ventas"}
-                {key === "yearsInBusiness" && "Años en el rubro"}
+                {key === "yearsInBusiness" && "Tiempo en el negocio"}
               </span>
               <input
                 type="text"
