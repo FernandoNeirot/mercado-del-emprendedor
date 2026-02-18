@@ -2,6 +2,8 @@
 
 import React from "react";
 import type { StoreFormState } from "../types";
+import { RichTextEditor } from "@/shared/components/RichTextEditor";
+import { Icon } from "@/shared/components/Icon";
 
 interface StoreEditorTabHistoriaProps {
   form: StoreFormState;
@@ -57,31 +59,25 @@ export function StoreEditorTabHistoria({ form, onChange }: StoreEditorTabHistori
           Párrafos
         </span>
         {(story.paragraphs ?? [""]).map((p, i) => (
-          <div key={i} className="flex gap-2">
-            <textarea
+          <div key={i} className="flex gap-2 items-start">
+            <RichTextEditor
               value={p}
-              onChange={(e) => setParagraph(i, e.target.value)}
-              rows={3}
-              className="flex-1 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
+              onChange={(html) => setParagraph(i, html)}
               placeholder={`Párrafo ${i + 1}`}
+              className="flex-1 min-w-0"
             />
-            <button
-              type="button"
-              onClick={() => removeParagraph(i)}
-              className="p-2 text-slate-500 hover:text-red-600 shrink-0"
-              aria-label="Quitar párrafo"
-            >
-              ×
-            </button>
+            {(story.paragraphs ?? []).length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeParagraph(i)}
+                className="shrink-0 p-2 text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                aria-label="Quitar párrafo"
+              >
+                <Icon name="delete" className="text-lg" />
+              </button>
+            )}
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={addParagraph}
-          className="text-sm text-primary dark:text-emerald-400 hover:underline"
-        >
-          + Agregar párrafo
-        </button>
+        ))}       
       </div>
     </section>
   );

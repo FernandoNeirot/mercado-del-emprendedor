@@ -36,15 +36,23 @@ export function StoreStory({ vendor, isStoreTab }: StoreStoryProps) {
           <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-0.5">
             por {story.founderName}
           </p>
-          <div className="mt-4 md:mt-6 space-y-3 md:space-y-4">
-            {story.paragraphs.map((paragraph, i) => (
-              <p
-                key={i}
-                className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed"
-              >
-                {paragraph}
-              </p>
-            ))}
+          <div className="mt-4 md:mt-6 space-y-3 md:space-y-4 [&_strong]:font-bold [&_em]:italic [&_u]:underline">
+            {story.paragraphs.map((paragraph, i) =>
+              paragraph.trim().startsWith("<") ? (
+                <div
+                  key={i}
+                  className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed prose prose-sm dark:prose-invert max-w-none [&_p]:mb-2 [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: paragraph }}
+                />
+              ) : (
+                <p
+                  key={i}
+                  className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed"
+                >
+                  {paragraph}
+                </p>
+              )
+            )}
           </div>
         </div>
       </div>
