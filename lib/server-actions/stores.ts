@@ -1,7 +1,6 @@
 "use server";
 
 import { cache } from "react";
-import { cookies } from "next/headers";
 import type { StoreVendor } from "@/features/tienda";
 import { getAdminFirestore } from "@/shared/configs/firebase-admin";
 import { getServerUser } from "@/shared/lib/auth";
@@ -50,19 +49,18 @@ export async function getStores(): Promise<StoreVendor[]> {
 export async function createStore(
   data: Omit<StoreVendor, "id" | "createdAt" | "userId"> & { createdAt?: Date }
 ): Promise<StoreVendor> {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
-  const res = await fetch(`${getBaseUrl()}/api/stores`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-    },
-    body: JSON.stringify(data),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error ?? "Error al crear la tienda");
-  return json.data as StoreVendor;
+  const user = await getServerUser();
+  const uid = user?.uid;
+  if (!uid) throw new Error("No autorizado");
+
+  const db = getAdminFirestore();
+  const { userId: _omit, ...rest } = data as Record<string, unknown>;
+  const storeData = { ...rest, userId: uid };
+  const docRef = await db.collection("stores").add(storeData);
+
+  const created = storeData as Record<string, unknown>;
+  const createdAt = created.createdAt ?? new Date();
+  return { id: docRef.id, ...created, createdAt } as StoreVendor;
 }
 
 /** Actualiza una tienda por slug (ej. feni-indumentaria-infantil). */
@@ -70,19 +68,32 @@ export async function updateStore(
   slug: string,
   data: Partial<Omit<StoreVendor, "id" | "createdAt" | "userId">>
 ): Promise<StoreVendor> {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
-  const res = await fetch(`${getBaseUrl()}/api/stores/${encodeURIComponent(slug)}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-    },
-    body: JSON.stringify(data),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error ?? "Error al actualizar la tienda");
-  return json.data as StoreVendor;
+  const user = await getServerUser();
+  const uid = user?.uid;
+  if (!uid) throw new Error("No autorizado");
+
+  const db = getAdminFirestore();
+  const snapshot = await db
+    .collection("stores")
+    .where("slug", "==", slug)
+    .limit(1)
+    .get();
+
+  const doc = snapshot.docs[0];
+  if (!doc) throw new Error("Tienda no encontrada");
+
+  const storeData = doc.data();
+  const storeUserId = storeData?.userId;
+  if (storeUserId && storeUserId !== uid) {
+    throw new Error("No tenés permiso para editar esta tienda");
+  }
+
+  const { id: _omit, userId: _omitUid, ...updateData } = data as Record<string, unknown>;
+  await doc.ref.update(updateData);
+
+  const merged = { ...storeData, ...updateData };
+  const createdAt = storeData?.createdAt?.toDate?.() ?? storeData?.createdAt;
+  return { id: doc.id, ...merged, createdAt } as StoreVendor;
 }
 
 /** Sube y optimiza una imagen (WebP) para la tienda. Carpeta en Storage = tienda/{id}. Siempre guarda como logo.webp para pisar la anterior. */

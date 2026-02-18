@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import type { StoreFormState } from "../types";
 
 interface StoreEditorHeaderProps {
@@ -58,6 +58,19 @@ export function StoreEditorHeader({
 
   const displayBannerUrl =
     bannerPreviewUrl ?? form.bannerUrl ?? initialBannerUrl ?? null;
+
+  const clientsValue = form.stats?.clients ?? "";
+  const salesValue = form.stats?.sales ?? "";
+  const activeClientsOrSales =
+    clientsValue ? "clients" : salesValue ? "sales" : null;
+  const [clientsOrSalesTab, setClientsOrSalesTab] = useState<"clients" | "sales">(
+    () => (clientsValue ? "clients" : salesValue ? "sales" : "clients")
+  );
+  const currentTab = activeClientsOrSales ?? clientsOrSalesTab;
+  useEffect(() => {
+    if (clientsValue) queueMicrotask(() => setClientsOrSalesTab("clients"));
+    else if (salesValue) queueMicrotask(() => setClientsOrSalesTab("sales"));
+  }, [clientsValue, salesValue]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -145,26 +158,97 @@ export function StoreEditorHeader({
         </label>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {(["location", "clients", "sales", "yearsInBusiness"] as const).map((key) => (
-            <label key={key} className="block">
-              <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                {key === "location" && "Ubicación"}
-                {key === "clients" && "Clientes"}
-                {key === "sales" && "Ventas"}
-                {key === "yearsInBusiness" && "Tiempo en el negocio"}
-              </span>
-              <input
-                type="text"
-                value={form.stats?.[key] ?? ""}
-                onChange={(e) =>
-                  onChange({
-                    stats: { ...form.stats, [key]: e.target.value },
-                  })
-                }
-                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
-              />
-            </label>
-          ))}
+          <label className="block sm:col-span-2">
+            <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+              Clientes o Ventas (uno solo)
+            </span>
+            <div className="flex flex-col gap-2">
+              <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700/50 p-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClientsOrSalesTab("clients");
+                    onChange({
+                      stats: { ...form.stats, clients: clientsValue, sales: "" },
+                    });
+                  }}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    currentTab === "clients"
+                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  Clientes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClientsOrSalesTab("sales");
+                    onChange({
+                      stats: { ...form.stats, clients: "", sales: salesValue },
+                    });
+                  }}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    currentTab === "sales"
+                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  Ventas
+                </button>
+              </div>
+              <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800">
+                <span className="flex items-center px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-sm font-medium">
+                  +
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={
+                    currentTab === "clients"
+                      ? clientsValue.replace(/^\+/, "").replace(/\D/g, "")
+                      : salesValue.replace(/^\+/, "").replace(/\D/g, "")
+                  }
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    const newValue = digits ? `+${digits}` : "";
+                    onChange({
+                      stats: {
+                        ...form.stats,
+                        [currentTab]: newValue,
+                        clients: currentTab === "clients" ? newValue : "",
+                        sales: currentTab === "sales" ? newValue : "",
+                      },
+                    });
+                  }}
+                  placeholder="Solo números"
+                  className="flex-1 min-w-0 px-3 py-2 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0"
+                />
+              </div>
+            </div>
+          </label>
+          {(["location", "yearsInBusiness"] as const).map((key) => {
+            const rawValue = form.stats?.[key] ?? "";
+            return (
+              <label key={key} className="block">
+                <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                  {key === "location" && "Ubicación"}
+                  {key === "yearsInBusiness" && "Tiempo en el negocio"}
+                </span>
+                <input
+                  type="text"
+                  value={rawValue}
+                  onChange={(e) =>
+                    onChange({
+                      stats: { ...form.stats, [key]: e.target.value },
+                    })
+                  }
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
+                />
+              </label>
+            );
+          })}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
