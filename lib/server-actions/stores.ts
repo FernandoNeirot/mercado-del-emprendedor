@@ -8,13 +8,18 @@ import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
 import { getBaseUrl } from "@/shared/configs/seo";
 import { CACHE_REVALIDATE_24H } from "./constants";
 
-export const getStoreById = cache(async (id: string): Promise<StoreVendor | null> => {
-  const storeResponse = await fetch(`${getBaseUrl()}/api/stores/${id}`, {
-    method: "GET",
-    next: { revalidate: CACHE_REVALIDATE_24H },
-  });
-  const storeData = await storeResponse.json();
-  return (storeData.data as StoreVendor) ?? null;
+export const getStoreById = cache(async (idOrSlug: string): Promise<StoreVendor | null> => {
+  try {
+    const response = await fetch(
+      `${getBaseUrl()}/api/stores/${idOrSlug}`,
+      { method: "GET", next: { revalidate: CACHE_REVALIDATE_24H } }
+    );
+    const json = await response.json();
+    return (json.data as StoreVendor) ?? null;
+  } catch (err) {
+    console.error("[getStoreById]", err);
+    return null;
+  }
 });
 
 /** Lista las tiendas del usuario autenticado (para el dashboard). */

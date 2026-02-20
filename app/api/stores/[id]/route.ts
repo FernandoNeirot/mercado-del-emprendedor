@@ -3,36 +3,48 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUidFromRequest } from "@/shared/lib/auth";
 
 export async function GET(request: NextRequest) {
-    try {
-      const db = getAdminFirestore();
-      const id = request.nextUrl.pathname.split('/').pop();
-      const snapshot = await db
-        .collection("stores")
-        .where("slug", "==", id ?? "")
-        .limit(1)
-        .get();
+  try {
+    const db = getAdminFirestore();
+    const id = request.nextUrl.pathname.split("/").pop() ?? "";
 
-      const doc = snapshot.docs[0];
-      if (!doc) {
-        return NextResponse.json(
-          { data: null, error: "Store not found" },
-          { status: 404 }
-        );
-      }
-
+    // 1) Try by document id first (for product.storeId, etc.)
+    const docRef = db.collection("stores").doc(id);
+    const docSnap = await docRef.get();
+    if (docSnap.exists) {
       return NextResponse.json(
-        { data: { id: doc.id, ...doc.data() }, error: null },
+        { data: { id: docSnap.id, ...docSnap.data() }, error: null },
         { status: 200 }
       );
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Error getting store";
+    }
+
+    // 2) Fallback: query by slug
+    const snapshot = await db
+      .collection("stores")
+      .where("slug", "==", id)
+      .limit(1)
+      .get();
+
+    const doc = snapshot.docs[0];
+    if (!doc) {
       return NextResponse.json(
-        { data: {}, error: errorMessage },
-        { status: 500 }
+        { data: null, error: "Store not found" },
+        { status: 404 }
       );
     }
+
+    return NextResponse.json(
+      { data: { id: doc.id, ...doc.data() }, error: null },
+      { status: 200 }
+    );
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Error getting store";
+    return NextResponse.json(
+      { data: null, error: errorMessage },
+      { status: 500 }
+    );
   }
+}
 
 export async function PATCH(
   request: NextRequest,

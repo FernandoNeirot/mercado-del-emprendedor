@@ -2,7 +2,6 @@ import { getAdminFirestore } from "@/shared/configs/firebase-admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  console.log("request.nextUrl.pathname", request.nextUrl.pathname);
   try {
     const db = getAdminFirestore();
     const id = request.nextUrl.pathname.split("/").pop() ?? "";
@@ -23,7 +22,6 @@ export async function GET(request: NextRequest) {
       .where("slug", "==", id)
       .limit(1)
       .get();
-    console.log("snapshot", snapshot);
     const doc = snapshot.docs[0];
     if (!doc) {
       return NextResponse.json(
@@ -31,13 +29,11 @@ export async function GET(request: NextRequest) {
         { status: 404 }
       );
     }
-    console.log("doc", doc);
     return NextResponse.json(
       { data: { id: doc.id, ...doc.data() }, error: null },
       { status: 200 }
     );
   } catch (error) {
-    console.log("error", error);
     const errorMessage = error instanceof Error ? error.message : "Error getting product";
     return NextResponse.json({ data: null, error: errorMessage }, { status: 500 });
   }
