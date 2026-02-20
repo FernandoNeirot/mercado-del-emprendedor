@@ -5,4 +5,4 @@ export {
   updateStore,
   uploadStoreImage,
 } from "./stores";
-export { getProductsByStoreId } from "./products";
+export { getProductsByStoreId, getProductById } from "./products";

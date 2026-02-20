@@ -20,7 +20,7 @@ export function StoreStory({ vendor, isStoreTab }: StoreStoryProps) {
         isStoreTab && "min-h-[calc(100dvh-220px)] flex flex-col"
       )}
     >
-      <div className="flex items-start gap-4 md:gap-6 max-w-3xl mx-auto">
+      <div className="flex items-start gap-4 md:gap-6 w-full max-w-xl mx-auto">
         <div className="shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

@@ -1,34 +1,44 @@
-import { getAdminFirestore } from '@/shared/configs/firebase-admin';
-import { NextRequest, NextResponse } from 'next/server';
+import { getAdminFirestore } from "@/shared/configs/firebase-admin";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-    try {
-      const db = getAdminFirestore();
-      const id = request.nextUrl.pathname.split('/').pop();
-      const snapshot = await db
-        .collection("products")
-        .where("slug", "==", id ?? "")
-        .limit(1)
-        .get();
+  console.log("request.nextUrl.pathname", request.nextUrl.pathname);
+  try {
+    const db = getAdminFirestore();
+    const id = request.nextUrl.pathname.split("/").pop() ?? "";
 
-      const doc = snapshot.docs[0];
-      if (!doc) {
-        return NextResponse.json(
-          { data: null, error: "Store not found" },
-          { status: 404 }
-        );
-      }
-
+    // 1) Try by document id first (for /product/[id] routes)
+    const docRef = db.collection("products").doc(id);
+    const docSnap = await docRef.get();
+    if (docSnap.exists) {
       return NextResponse.json(
-        { data: { id: doc.id, ...doc.data() }, error: null },
+        { data: { id: docSnap.id, ...docSnap.data() }, error: null },
         { status: 200 }
       );
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Error getting store";
+    }
+
+    // 2) Fallback: query by slug
+    const snapshot = await db
+      .collection("products")
+      .where("slug", "==", id)
+      .limit(1)
+      .get();
+    console.log("snapshot", snapshot);
+    const doc = snapshot.docs[0];
+    if (!doc) {
       return NextResponse.json(
-        { data: {}, error: errorMessage },
-        { status: 500 }
+        { data: null, error: "Product not found" },
+        { status: 404 }
       );
     }
+    console.log("doc", doc);
+    return NextResponse.json(
+      { data: { id: doc.id, ...doc.data() }, error: null },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log("error", error);
+    const errorMessage = error instanceof Error ? error.message : "Error getting product";
+    return NextResponse.json({ data: null, error: errorMessage }, { status: 500 });
   }
+}

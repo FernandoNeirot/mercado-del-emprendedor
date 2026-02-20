@@ -20,7 +20,7 @@ function formatPrice(price: number): string {
 export function StoreProductCard({ product, storeId }: StoreProductCardProps) {
   return (
     <Link
-      href={`/tienda/${storeId}/producto/${product.id}`}
+      href={`/product/${product.id}`}
       className="bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 group flex flex-col hover:shadow-xl transition-shadow"
     >
       <div className="relative aspect-square overflow-hidden">

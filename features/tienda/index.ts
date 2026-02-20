@@ -6,6 +6,7 @@ export { StoreHeader } from "./components/StoreHeader";
 export { StoreTabs, type StoreTab } from "./components/StoreTabs";
 export { StoreCatalog } from "./components/StoreCatalog";
 export { StoreProductCard } from "./components/StoreProductCard";
+export { ProductView } from "./components/ProductView";
 export { StoreStory } from "./components/StoreStory";
 export { StoreSocial } from "./components/StoreSocial";
 export { StorePayments } from "./components/StorePayments";

@@ -6,6 +6,7 @@ import { Icon } from "@/shared/components/Icon";
 
 export interface Product {
   id: string;
+  slug: string;
   name: string;
   vendor: string;
   imageUrl: string;
@@ -68,9 +69,8 @@ export function ProductCard({
           {product.vendor}
         </p>
         <h4
-          className={`font-bold text-sm md:text-lg truncate text-slate-800 dark:text-slate-100 ${
-            price != null ? "mb-2 md:mb-3" : "mb-3 md:mb-4"
-          }`}
+          className={`font-bold text-sm md:text-lg truncate text-slate-800 dark:text-slate-100 ${price != null ? "mb-2 md:mb-3" : "mb-3 md:mb-4"
+            }`}
         >
           {product.name}
         </h4>
@@ -90,7 +90,7 @@ export function ProductCard({
           ) : (
             <button
               type="button"
-              onClick={() => onView?.(product.id)}
+              onClick={() => onView?.(product.slug)}
               className="w-full py-2 md:py-2.5 bg-slate-200 shadow-sm dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg md:rounded-xl font-bold flex items-center justify-center gap-2 transition-all border border-slate-100 dark:border-slate-700 uppercase text-[10px] md:text-xs tracking-wider"
             >
               {actionContent}

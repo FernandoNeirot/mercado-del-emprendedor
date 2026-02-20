@@ -35,22 +35,24 @@ export function StorePayments({ vendor }: StorePaymentsProps) {
 
   return (
     <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
-      <h2 className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 md:mb-6">
-        Recibe pagos con
-      </h2>
-      <div className="flex flex-wrap gap-4 md:gap-6">
-        {paymentConfig.map(({ key, label, icon, colorClass }) => {
-          if (!methods.includes(key)) return null;
-          return (
-            <div
-              key={key}
-              className={`flex items-center gap-2 md:gap-3 px-4 py-2.5 md:px-5 md:py-3 rounded-full md:rounded-xl ${colorClass}`}
-            >
-              <Icon name={icon} className="text-xl md:text-2xl" />
-              <span className="text-sm md:text-base font-semibold">{label}</span>
-            </div>
-          );
-        })}
+      <div className="w-full max-w-xl mx-auto">
+        <h2 className="text-xs md:text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 md:mb-6">
+          Recibe pagos con
+        </h2>
+        <div className="flex flex-wrap gap-4 md:gap-6">
+          {paymentConfig.map(({ key, label, icon, colorClass }) => {
+            if (!methods.includes(key)) return null;
+            return (
+              <div
+                key={key}
+                className={`flex items-center gap-2 md:gap-3 px-4 py-2.5 md:px-5 md:py-3 rounded-full md:rounded-xl ${colorClass}`}
+              >
+                <Icon name={icon} className="text-xl md:text-2xl" />
+                <span className="text-sm md:text-base font-semibold">{label}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

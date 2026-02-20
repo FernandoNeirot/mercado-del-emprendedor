@@ -18,6 +18,7 @@ function storeProductToProduct(
 ): Product {
   return {
     id: storeProduct.id,
+    slug: storeProduct.slug,
     name: storeProduct.name,
     vendor: vendorName,
     imageUrl: storeProduct.images[0] ?? "",
@@ -32,16 +33,16 @@ export function StoreCatalog({ vendor, products, searchQuery }: StoreCatalogProp
   const query = searchQuery?.trim().toLowerCase() ?? "";
   const bySearch = query
     ? products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query) ||
-          (p.description ?? "").toLowerCase().includes(query)
-      )
+      (p) =>
+        p.name.toLowerCase().includes(query) ||
+        (p.description ?? "").toLowerCase().includes(query)
+    )
     : products;
 
   const categoryFilters = [...new Set(bySearch.map((p) => p.category))];
   const filterOptions = [
     { id: ALL_PRODUCTS_ID, label: "Todos los productos" },
-    ...categoryFilters.map((id) => ({ id, label: id })).sort((a,b)=>a.label.localeCompare(b.label)),
+    ...categoryFilters.map((id) => ({ id, label: id })).sort((a, b) => a.label.localeCompare(b.label)),
   ];
 
   const filteredProducts =
@@ -57,11 +58,10 @@ export function StoreCatalog({ vendor, products, searchQuery }: StoreCatalogProp
             key={filter.id}
             type="button"
             onClick={() => setActiveFilter(filter.id)}
-            className={`px-4 py-2.5 md:px-5 md:py-3 rounded-full text-sm font-semibold transition-colors ${
-              activeFilter === filter.id
-                ? "bg-primary dark:bg-emerald-600 text-white"
-                : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
-            }`}
+            className={`px-4 py-2.5 md:px-5 md:py-3 rounded-full text-sm font-semibold transition-colors ${activeFilter === filter.id
+              ? "bg-primary dark:bg-emerald-600 text-white"
+              : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
+              }`}
           >
             {filter.label}
           </button>
@@ -74,7 +74,7 @@ export function StoreCatalog({ vendor, products, searchQuery }: StoreCatalogProp
             key={product.id}
             product={storeProductToProduct(product, vendor.name)}
             price={product.price}
-            href={`/tienda/${vendor.id}/producto/${product.id}`}
+            href={`/producto/${product.slug}`}
           />
         ))}
       </div>
