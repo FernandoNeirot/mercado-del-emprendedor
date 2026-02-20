@@ -2,7 +2,6 @@ import { getStores } from "@/lib/server-actions";
 import { DashboardStoreList } from "@/features/dashboard-tienda";
 import type { Metadata } from "next";
 
-/** Evita prerender en build: getStores() hace fetch a la API y no hay servidor en build. */
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -20,7 +19,7 @@ export default async function DashboardPage() {
           Mis tiendas
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
-          Seleccioná una tienda para editarla o creá una nueva.
+          Seleccioná una tienda para editarla {stores.length < 2 && "o creá una nueva"}.
         </p>
         <DashboardStoreList stores={stores} />
       </div>

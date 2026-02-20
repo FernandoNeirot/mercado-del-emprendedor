@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Logo } from "./components/Logo";
@@ -12,6 +12,7 @@ import {
   type LocationData,
 } from "@/features/location-selector";
 import { AuthModal } from "@/features/login";
+import { logout } from "@/lib/client-auth";
 import type { AuthUser } from "@/lib/client-auth";
 
 interface Category {
@@ -59,11 +60,34 @@ export function Header({
   const showLocation = !hideLocation && !isTiendaPage && !isPrivatePage;
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(initialUser);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRefMobile = useRef<HTMLDivElement>(null);
+  const profileMenuRefDesktop = useRef<HTMLDivElement>(null);
   const buscarFromUrl = searchParams?.get("buscar") ?? "";
   const [tiendaSearch, setTiendaSearch] = useState(buscarFromUrl);
   useEffect(() => {
     setTiendaSearch(buscarFromUrl);
   }, [pathname, buscarFromUrl]);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const inside = [profileMenuRefMobile.current, profileMenuRefDesktop.current].some(
+        (el) => el?.contains(target)
+      );
+      if (!inside) setProfileMenuOpen(false);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [profileMenuOpen]);
+
+  const handleLogout = async () => {
+    await logout();
+    setProfileMenuOpen(false);
+    setUser(null);
+    router.refresh();
+  };
 
   const handleSearch = (value: string) => {
     if (isTiendaPage) {
@@ -111,14 +135,44 @@ export function Header({
               )}
             </button>
             {user ? (
-              <Link
-                href="/dashboard"
-                className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                title="Mi Perfil"
-                prefetch
-              >
-                <Icon name="person" className="text-xl" />
-              </Link>
+              <div className="relative" ref={profileMenuRefMobile}>
+                <button
+                  type="button"
+                  onClick={() => setProfileMenuOpen((o) => !o)}
+                  className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                  title="Mi Perfil"
+                  aria-expanded={profileMenuOpen}
+                  aria-haspopup="true"
+                >
+                  <Icon name="person" className="text-xl" />
+                </button>
+                {profileMenuOpen && (
+                  <div
+                    className="absolute right-0 top-full mt-1 py-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50"
+                    role="menu"
+                  >
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg transition-colors"
+                      role="menuitem"
+                      prefetch
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      <Icon name="dashboard" className="text-lg" />
+                      Ir al dashboard
+                    </Link>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg transition-colors"
+                      role="menuitem"
+                      onClick={handleLogout}
+                    >
+                      <Icon name="logout" className="text-lg" />
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <button
                 onClick={handleProfileClick}
@@ -197,14 +251,44 @@ export function Header({
                 )}
               </button>
               {user ? (
-                <Link
-                  href="/dashboard"
-                  className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                  title="Mi Perfil"
-                  prefetch
-                >
-                  <Icon name="person" className="text-lg lg:text-xl" />
-                </Link>
+                <div className="relative" ref={profileMenuRefDesktop}>
+                  <button
+                    type="button"
+                    onClick={() => setProfileMenuOpen((o) => !o)}
+                    className="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                    title="Mi Perfil"
+                    aria-expanded={profileMenuOpen}
+                    aria-haspopup="true"
+                  >
+                    <Icon name="person" className="text-lg lg:text-xl" />
+                  </button>
+                  {profileMenuOpen && (
+                    <div
+                      className="absolute right-0 top-full mt-1 py-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50"
+                      role="menu"
+                    >
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-t-lg transition-colors"
+                        role="menuitem"
+                        prefetch
+                        onClick={() => setProfileMenuOpen(false)}
+                      >
+                        <Icon name="dashboard" className="text-lg" />
+                        Ir al dashboard
+                      </Link>
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-b-lg transition-colors"
+                        role="menuitem"
+                        onClick={handleLogout}
+                      >
+                        <Icon name="logout" className="text-lg" />
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <button
                   onClick={handleProfileClick}

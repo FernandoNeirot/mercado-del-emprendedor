@@ -33,9 +33,9 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
 
       {/* Barra superior */}
       <div className="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-slate-900/85 via-slate-900/40 to-transparent">
-        <div className="flex items-center justify-end px-4 md:px-6 py-3 max-w-[1240px] mx-auto">          
+        <div className="flex items-center justify-end px-4 md:px-6 py-3 max-w-[1240px] mx-auto">
           <button
-            type="button"            
+            type="button"
             aria-label="Compartir"
           >
             <Icon name="share" className="text-xl p-2 rounded-full bg-white/40 hover:bg-white/30 text-white backdrop-blur-sm transition-colors" />
@@ -76,7 +76,7 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
         </p>
 
         <div className="grid grid-cols-3 gap-4 md:gap-8 mt-6 md:mt-8 max-w-md mx-auto">
-        {
+          {
             vendor.stats.clients && (
               <div className="text-center">
                 <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
@@ -114,19 +114,19 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
             )
           }
 
-{
-  vendor.stats.location && (
-    <div className="text-center">
-      <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
-        {vendor.stats.location}
-      </p>
-      <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-        Ubicación
-      </p>
-    </div>
-  )
-}
-          
+          {
+            vendor.stats.location && (
+              <div className="text-center">
+                <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
+                  {vendor.stats.location}
+                </p>
+                <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
+                  Ubicación
+                </p>
+              </div>
+            )
+          }
+
         </div>
 
         <button

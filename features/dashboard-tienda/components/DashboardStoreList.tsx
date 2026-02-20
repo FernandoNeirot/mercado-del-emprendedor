@@ -12,13 +12,16 @@ interface DashboardStoreListProps {
 export function DashboardStoreList({ stores }: DashboardStoreListProps) {
   return (
     <div className="space-y-4">
-      <Link
-        href="/dashboard/tienda/nueva"
-        className="flex items-center justify-center gap-2 w-full py-4 px-6 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-600 hover:border-primary dark:hover:border-emerald-500 hover:bg-primary/5 dark:hover:bg-emerald-500/5 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-emerald-400 font-semibold transition-colors"
-      >
-        <Icon name="add" className="text-xl" />
-        Nueva tienda
-      </Link>
+      {
+        stores.length < 2 &&
+        <Link
+          href="/dashboard/tienda/nueva"
+          className="flex items-center justify-center gap-2 w-full py-4 px-6 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-600 hover:border-primary dark:hover:border-emerald-500 hover:bg-primary/5 dark:hover:bg-emerald-500/5 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-emerald-400 font-semibold transition-colors"
+        >
+          <Icon name="add" className="text-xl" />
+          Nueva tienda
+        </Link>
+      }
 
       {stores.length === 0 ? (
         <p className="text-center py-8 text-slate-500 dark:text-slate-400 text-sm">
