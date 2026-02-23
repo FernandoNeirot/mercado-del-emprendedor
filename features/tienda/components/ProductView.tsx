@@ -52,7 +52,7 @@ export function ProductView({ product, vendor }: ProductViewProps) {
           </Link>
           <Icon name="chevron_right" className="text-base" />
           <Link
-            href={`/tienda/${vendor.id}`}
+            href={`/tienda/${vendor.slug}`}
             className="hover:text-primary dark:hover:text-emerald-400 transition-colors truncate"
           >
             {vendor.name}
@@ -87,11 +87,10 @@ export function ProductView({ product, vendor }: ProductViewProps) {
                     key={i}
                     type="button"
                     onClick={() => setSelectedIndex(i)}
-                    className={`relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-colors shrink-0 ${
-                      selectedIndex === i
+                    className={`relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-colors shrink-0 ${selectedIndex === i
                         ? "border-primary dark:border-emerald-500 ring-2 ring-primary/20"
                         : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
-                    }`}
+                      }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img

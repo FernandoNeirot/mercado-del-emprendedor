@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Icon } from "@/shared/components/Icon";
 
 export function Logo() {
   const pathname = usePathname();
@@ -11,12 +11,18 @@ export function Logo() {
 
   const content = (
     <>
-      <div className="w-9 h-9 md:w-10 md:h-10 bg-primary rounded-xl flex items-center justify-center text-white shrink-0">
-        <Icon name="storefront" className="text-lg md:text-base" />
+      <div className="relative w-10 h-9 md:w-12 md:h-12 bg-primary rounded-md flex items-center justify-center text-white shrink-0 overflow-hidden">
+        <Image
+          src="/logo_1.webp"
+          alt="Mercado Emprendedor"
+          fill
+          className="object-cover"
+          sizes="2rem"
+        />
       </div>
       <div className="block">
-        <h1 className="text-xs sm:text-sm font-bold leading-none text-primary dark:text-emerald-400 uppercase tracking-tighter">
-          Mercado del
+        <h1 className="text-xs sm:text-sm font-bold leading-none text-primary dark:text-emerald-400 uppercase tracking-[0.2em] sm:tracking-[0.55em]">
+          Mercado
         </h1>
         <p className="text-sm sm:text-base font-black tracking-tight leading-none uppercase">
           Emprendedor

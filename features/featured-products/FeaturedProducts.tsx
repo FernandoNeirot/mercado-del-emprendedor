@@ -14,6 +14,7 @@ const defaultProducts: Product[] = [
     id: "1",
     name: "Torta de Frutos Rojos",
     vendor: "Bakery Shop",
+    slug: "torta-de-frutos-rojos",
     imageUrl:
       "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/taller.webp?alt=media&token=2576fa08-53e6-4684-bf6d-76efdbe2628b",
   },
@@ -21,6 +22,7 @@ const defaultProducts: Product[] = [
     id: "2",
     name: "Bolso de Cuero Handmade",
     vendor: "Artesanías Luz",
+    slug: "bolso-de-cuero-handmade",
     imageUrl:
       "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/ropa.webp?alt=media&token=d6f729ce-6b95-4eb7-958c-457d64cb65cf",
   },
@@ -28,6 +30,7 @@ const defaultProducts: Product[] = [
     id: "3",
     name: "Manta Nórdica XXL",
     vendor: "Textiles Sur",
+    slug: "manta-nordica-xxl",
     imageUrl:
       "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/panaderia.webp?alt=media&token=9bce9e33-457a-4177-82a5-ac0709c92832",
   },
@@ -35,6 +38,7 @@ const defaultProducts: Product[] = [
     id: "4",
     name: "Set de Tazas Orgánicas",
     vendor: "Taller Mara",
+    slug: "set-de-tazas-organicas",
     imageUrl:
       "https://firebasestorage.googleapis.com/v0/b/mercado-del-emprendedor.firebasestorage.app/o/costura.webp?alt=media&token=a53701ff-6f22-475d-b049-d04e753a91cc",
   },

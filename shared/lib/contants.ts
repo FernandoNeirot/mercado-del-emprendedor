@@ -1,1 +1,1 @@
-export const projectName = "Mercado del emprendedor";
+export const projectName = "Mercado emprendedor";

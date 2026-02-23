@@ -13,7 +13,7 @@ export function Footer() {
                 <Icon name="storefront" className="text-sm" />
               </div>
               <p className="font-bold text-xl uppercase tracking-tight">
-                Mercado del Emprendedor
+                Mercado Emprendedor
               </p>
             </div>
             <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 leading-relaxed">
@@ -76,8 +76,8 @@ export function Footer() {
           </div> */}
         </div>
         <div className="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
-          <p>© 2024 Mercado del Emprendedor. Hecho con ❤️ para la comunidad de emprendedores.</p>
-          <div className="flex gap-6">            
+          <p>© 2026 Mercado Emprendedor. Hecho con ❤️ para la comunidad de emprendedores.</p>
+          <div className="flex gap-6">
             <a className="hover:text-primary transition-colors" href="#">
               Términos
             </a>

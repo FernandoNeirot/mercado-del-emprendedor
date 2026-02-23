@@ -11,11 +11,11 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL ||
   (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
 
-export const SITE_NAME = "Mercado del Emprendedor";
+export const SITE_NAME = "Mercado Emprendedor";
 export const SITE_DESCRIPTION =
   "La red más grande de talento local. Descubrí emprendedores, tiendas y productos cerca tuyo.";
 export const SITE_KEYWORDS = [
-  "mercado del emprendedor",
+  "mercado emprendedor",
   "emprendedores",
   "tiendas locales",
   "comprar local",
@@ -24,7 +24,7 @@ export const SITE_KEYWORDS = [
   "comercio local",
 ];
 export const LOCALE = "es_AR";
-export const TWITTER_HANDLE = "@MercadoDelEmprendedor";
+export const TWITTER_HANDLE = "@MercadoEmprendedor";
 
 export function getBaseUrl(): string {
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_BASE_URL) {

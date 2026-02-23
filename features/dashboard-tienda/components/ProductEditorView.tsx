@@ -207,25 +207,12 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
 
               <label className="block">
                 <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  Descripción corta
-                </span>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
-                  placeholder="Breve descripción"
-                />
-              </label>
-
-              <label className="block">
-                <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  Descripción detallada (HTML)
+                  Descripción Completa
                 </span>
                 <RichTextEditor
                   value={richDescription}
                   onChange={setRichDescription}
-                  placeholder="Descripción enriquecida del producto..."
+                  placeholder="Descripción del producto..."
                 />
               </label>
 
