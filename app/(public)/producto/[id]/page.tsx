@@ -12,13 +12,10 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
-  console.log("id", id);
   const product = await getProductById(id);
-  console.log("product", product);
   if (!product) return { title: "Producto no encontrado" };
 
   const store = await getStoreById(product.storeId);
-  console.log("store", store);
   const storeName = store?.name ?? "Tienda";
 
   const title = `${product.name} | ${storeName}`;

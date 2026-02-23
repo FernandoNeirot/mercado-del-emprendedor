@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { setAuthCookies, clearAuthCookies } from "./utils";
 
-const FIREBASE_AUTH_BASE =
-  "https://identitytoolkit.googleapis.com/v1/accounts";
+const FIREBASE_AUTH_BASE = "https://identitytoolkit.googleapis.com/v1/accounts";
 
 interface FirebaseAuthResponse {
   idToken?: string;
@@ -16,7 +15,6 @@ interface FirebaseAuthResponse {
     code?: number;
   };
 }
-
 
 async function callFirebaseAuth(
   endpoint: string,
@@ -36,24 +34,20 @@ async function callFirebaseAuth(
   const data = (await res.json()) as FirebaseAuthResponse;
 
   if (!res.ok) {
-    const message =
-      data.error?.message ?? `Error en Firebase Auth: ${res.status}`;
+    const message = data.error?.message ?? `Error en Firebase Auth: ${res.status}`;
     return { error: { message, code: res.status } };
   }
 
   return data;
 }
 
-export async function POST(request: NextRequest) {  
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, password, action = "login" } = body;
 
     if (!email || typeof email !== "string") {
-      return NextResponse.json(
-        { error: "El campo email es requerido" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "El campo email es requerido" }, { status: 400 });
     }
 
     if (!password || typeof password !== "string") {
@@ -74,14 +68,12 @@ export async function POST(request: NextRequest) {
 
       if (result.error) {
         const msg = result.error.message;
-        const status =
-          msg.includes("EMAIL_EXISTS") ? 409
-          : msg.includes("WEAK_PASSWORD") ? 400
-          : 400;
-        return NextResponse.json(
-          { error: mapFirebaseError(msg) },
-          { status }
-        );
+        const status = msg.includes("EMAIL_EXISTS")
+          ? 409
+          : msg.includes("WEAK_PASSWORD")
+            ? 400
+            : 400;
+        return NextResponse.json({ error: mapFirebaseError(msg) }, { status });
       }
 
       const response = NextResponse.json({
@@ -118,10 +110,7 @@ export async function POST(request: NextRequest) {
         msg.includes("EMAIL_NOT_FOUND")
           ? 401
           : 400;
-      return NextResponse.json(
-        { error: mapFirebaseError(msg) },
-        { status }
-      );
+      return NextResponse.json({ error: mapFirebaseError(msg) }, { status });
     }
 
     const response = NextResponse.json({
@@ -142,11 +131,8 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.log("[auth] Error:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
+    console.error("[auth] Error:", error);
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
 
