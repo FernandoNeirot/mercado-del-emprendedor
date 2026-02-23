@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/shared/components/Icon";
@@ -21,7 +21,7 @@ interface ProductEditorViewProps {
 
 export function ProductEditorView({ product, store }: ProductEditorViewProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isSaving, setIsSaving] = useState(false);
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(String(product.price));
   const [category, setCategory] = useState(product.category);
@@ -84,62 +84,64 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    startTransition(async () => {
-      try {
-        const finalImages: string[] = [];
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      const finalImages: string[] = [];
 
-        for (let i = 0; i < MAX_IMAGES; i++) {
-          const file = imageFiles[i];
-          const existingUrl = imageSlots[i];
-          if (file && file instanceof File && file.size > 0) {
-            const formData = new FormData();
-            formData.append("image", file);
-            const baseUrl =
-              typeof window !== "undefined"
-                ? window.location.origin
-                : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-            const res = await fetch(
-              `${baseUrl}/api/products/${product.id}/images?folder=products/${product.id}`,
-              { method: "POST", body: formData }
-            );
-            const json = await res.json();
-            if (json.success && json.data?.url) {
-              finalImages.push(json.data.url);
-            }
-          } else if (existingUrl) {
-            finalImages.push(existingUrl);
+      for (let i = 0; i < MAX_IMAGES; i++) {
+        const file = imageFiles[i];
+        const existingUrl = imageSlots[i];
+        if (file && file instanceof File && file.size > 0) {
+          const formData = new FormData();
+          formData.append("image", file);
+          const baseUrl =
+            typeof window !== "undefined"
+              ? window.location.origin
+              : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+          const res = await fetch(
+            `${baseUrl}/api/products/${product.id}/images?folder=products/${product.id}`,
+            { method: "POST", body: formData }
+          );
+          const json = await res.json();
+          if (json.success && json.data?.url) {
+            finalImages.push(json.data.url);
           }
+        } else if (existingUrl) {
+          finalImages.push(existingUrl);
         }
-
-        const validSpecs = specs
-          .filter((s) => s.label.trim() || s.value.trim())
-          .map((s) => ({ label: s.label.trim(), value: s.value.trim() }));
-
-        const productIdentifier = product.slug || product.id;
-        const updated = await updateProduct(productIdentifier, {
-          name: name.trim(),
-          price: parseFloat(price) || 0,
-          category: category.trim() || "general",
-          description: description.trim(),
-          richDescription: richDescription.trim() || undefined,
-          images: finalImages,
-          imageUrl: finalImages[0] ?? "",
-          specs: validSpecs.length > 0 ? validSpecs : undefined,
-        });
-
-        if (updated) {
-          router.push(`/dashboard/tienda/${store.slug}`);
-          router.refresh();
-        } else {
-          alert("Error al guardar el producto");
-        }
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Error al guardar";
-        alert(msg);
       }
-    });
+
+      const validSpecs = specs
+        .filter((s) => s.label.trim() || s.value.trim())
+        .map((s) => ({ label: s.label.trim(), value: s.value.trim() }));
+
+      const productIdentifier = product.slug || product.id;
+      const updated = await updateProduct(productIdentifier, {
+        name: name.trim(),
+        price: parseFloat(price) || 0,
+        category: category.trim() || "general",
+        description: description.trim(),
+        richDescription: richDescription.trim() || undefined,
+        images: finalImages,
+        imageUrl: finalImages[0] ?? "",
+        specs: validSpecs.length > 0 ? validSpecs : undefined,
+      });
+
+      if (updated) {
+        router.refresh();
+        router.push(`/dashboard/tienda/${store.slug}`);
+      } else {
+        alert("Error al guardar el producto");
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al guardar";
+      alert(msg);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -221,7 +223,7 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
                   Descripción detallada (HTML)
                 </span>
                 <RichTextEditor
-                  content={richDescription}
+                  value={richDescription}
                   onChange={setRichDescription}
                   placeholder="Descripción enriquecida del producto..."
                 />
@@ -345,10 +347,10 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
             </Link>
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isSaving}
               className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold disabled:opacity-50"
             >
-              {isPending ? "Guardando…" : "Guardar cambios"}
+              {isSaving ? "Guardando…" : "Guardar cambios"}
             </button>
           </div>
         </form>

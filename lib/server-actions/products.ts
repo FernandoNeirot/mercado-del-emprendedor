@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { cache } from "react";
 import type { StoreProduct } from "@/features/tienda";
 import { getBaseUrl } from "@/shared/configs/seo";
@@ -54,9 +55,17 @@ export async function updateProduct(
       docSnap = doc;
     }
 
-    const { id: _omit, storeId: _omitStore, createdAt: _omitCreated, ...updateData } =
+    const { id: _omit, storeId: _omitStore, createdAt: _omitCreated, ...rest } =
       data as Record<string, unknown>;
+    const updateData: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(rest)) {
+      if (value !== undefined) {
+        updateData[key] = value;
+      }
+    }
     await docRef.update(updateData);
+
+    revalidatePath("/dashboard/tienda", "layout");
 
     const updated = await docRef.get();
     const raw = updated.data();
