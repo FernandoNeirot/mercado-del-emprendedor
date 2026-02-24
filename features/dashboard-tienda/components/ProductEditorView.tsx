@@ -207,8 +207,7 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
                   placeholder="ej. remera-algodon-negra"
                 />
                 <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono break-all">
-                  https://mercadodelemprendedor.com/tienda/{store.slug}/producto/
-                  {(slug.trim() || "tu-texto")}-{store.slug}
+                  {`https://mercadodelemprendedor.com/tienda/${store.slug}/producto/${slug.trim() || "tu-texto"}-${store.slug}`}
                 </span>
               </label>
 
