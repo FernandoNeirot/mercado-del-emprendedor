@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -12,16 +11,17 @@ export function Logo() {
   const content = (
     <>
       <div className="relative w-10 h-9 md:w-12 md:h-12 bg-primary rounded-md flex items-center justify-center text-white shrink-0 overflow-hidden">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="/logo_1.webp"
           alt="Mercado Emprendedor"
-          fill
           className="object-cover"
-          sizes="2rem"
+          width={48}
+          height={48}
         />
       </div>
       <div className="block">
-        <h1 className="text-xs sm:text-sm font-bold leading-none text-primary dark:text-emerald-400 uppercase tracking-[0.2em] sm:tracking-[0.55em]">
+        <h1 className="text-xs sm:text-sm font-bold leading-none text-primary dark:text-emerald-400 uppercase tracking-[0.55em]">
           Mercado
         </h1>
         <p className="text-sm sm:text-base font-black tracking-tight leading-none uppercase">

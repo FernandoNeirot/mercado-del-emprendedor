@@ -5,14 +5,14 @@ import type { Metadata } from "next";
 import { SITE_NAME } from "@/shared/configs/seo";
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string, productId: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const product = await getProductById(id);
+  const { productId } = await params;
+  const product = await getProductById(productId);
   if (!product) return { title: "Producto no encontrado" };
 
   const store = await getStoreById(product.storeId);
@@ -30,8 +30,8 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { id } = await params;
-  const product = await getProductById(id);
+  const { productId } = await params;
+  const product = await getProductById(productId);
 
   if (!product) {
     notFound();

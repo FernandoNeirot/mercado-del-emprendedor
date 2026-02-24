@@ -74,7 +74,7 @@ export function StoreCatalog({ vendor, products, searchQuery }: StoreCatalogProp
             key={product.id}
             product={storeProductToProduct(product, vendor.name)}
             price={product.price}
-            href={`/producto/${product.slug}`}
+            href={`/tienda/${vendor.slug}/producto/${product.slug}`}
           />
         ))}
       </div>

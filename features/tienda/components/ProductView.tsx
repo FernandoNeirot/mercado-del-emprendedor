@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/shared/components/Icon";
+import { useRouter } from "next/navigation";
 import type { StoreProduct } from "../types";
 import type { StoreVendor } from "../types";
 
@@ -33,11 +34,11 @@ export function ProductView({ product, vendor }: ProductViewProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const mainImage = images[selectedIndex] ?? images[0];
 
-  const contactHref = vendor.personalInfo?.email?.trim()
-    ? `mailto:${vendor.personalInfo.email}?subject=Consulta por: ${encodeURIComponent(product.name)}`
-    : `/tienda/${vendor.id}`;
-
-  const isContactExternal = contactHref.startsWith("mailto:");
+  const handleContact = () => {
+    const whatsappMessage = `Hola,%20estoy%20interesado%20en%20el%20producto%20${encodeURIComponent(product.name)}.%0A${encodeURIComponent(product.slug)}`;
+    const linkSeller = `https://wa.me/${vendor?.personalInfo?.phone}?text=${whatsappMessage}`;
+    window.open(linkSeller, "_blank");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900/50 pb-10 md:pb-16">
@@ -88,8 +89,8 @@ export function ProductView({ product, vendor }: ProductViewProps) {
                     type="button"
                     onClick={() => setSelectedIndex(i)}
                     className={`relative w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-colors shrink-0 ${selectedIndex === i
-                        ? "border-primary dark:border-emerald-500 ring-2 ring-primary/20"
-                        : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
+                      ? "border-primary dark:border-emerald-500 ring-2 ring-primary/20"
+                      : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
                       }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -105,7 +106,7 @@ export function ProductView({ product, vendor }: ProductViewProps) {
           </section>
 
           {/* Info del producto */}
-          <section className="flex flex-col">
+          <section className="flex flex-col lg:min-h-0">
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
               {product.category}
             </p>
@@ -113,7 +114,7 @@ export function ProductView({ product, vendor }: ProductViewProps) {
               {product.name}
             </h1>
 
-            <div className="flex flex-wrap items-baseline gap-2 mb-6">
+            <div className="flex flex-wrap items-baseline gap-2 mb-4">
               <span className="text-2xl md:text-3xl font-bold text-primary dark:text-emerald-400">
                 {formatPrice(product.price)}
               </span>
@@ -142,44 +143,37 @@ export function ProductView({ product, vendor }: ProductViewProps) {
               </div>
             )}
 
-            {product.specs && product.specs.length > 0 && (
-              <dl className="grid gap-2 mb-6 p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
-                {product.specs.map((spec, i) => (
-                  <div key={i} className="flex gap-2 text-sm">
-                    <dt className="font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-                      {spec.label}:
-                    </dt>
-                    <dd className="text-slate-700 dark:text-slate-200">
-                      {spec.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-
-            {/* Consultar al vendedor */}
-            <div className="mt-auto pt-4">
-              {isContactExternal ? (
-                <a
-                  href={contactHref}
+            {
+              vendor.personalInfo?.phone &&
+              <div className="mt-2 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={handleContact}
                   className="w-full flex items-center justify-center gap-2 py-4 md:py-5 bg-primary hover:bg-primary/90 text-white font-bold text-base md:text-lg rounded-2xl shadow-lg shadow-primary/25 transition-colors"
                 >
                   <Icon name="chat" className="text-xl" />
                   Consultar al vendedor
-                </a>
-              ) : (
-                <Link
-                  href={contactHref}
-                  className="w-full flex items-center justify-center gap-2 py-4 md:py-5 bg-primary hover:bg-primary/90 text-white font-bold text-base md:text-lg rounded-2xl shadow-lg shadow-primary/25 transition-colors"
-                >
-                  <Icon name="chat" className="text-xl" />
-                  Consultar al vendedor
-                </Link>
-              )}
-            </div>
+                </button>
+              </div>
+            }
           </section>
         </div>
-
+        <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2">
+          {product.specs && product.specs.length > 0 && (
+            <dl className="grid gap-2 mb-6 p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              {product.specs.map((spec, i) => (
+                <div key={i} className="flex gap-2 text-sm">
+                  <dt className="font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+                    {spec.label}:
+                  </dt>
+                  <dd className="text-slate-700 dark:text-slate-200">
+                    {spec.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
         {/* Card del vendedor */}
         <section className="mt-8 md:mt-12 p-4 md:p-6 rounded-2xl md:rounded-3xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
           <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">

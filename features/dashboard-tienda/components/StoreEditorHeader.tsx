@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useMemo, useState } from "react";
 import type { StoreFormState } from "../types";
+import { Icon } from "@/shared/components/Icon";
 
 interface StoreEditorHeaderProps {
   form: StoreFormState;
@@ -139,7 +140,7 @@ export function StoreEditorHeader({
               placeholder="feni-indumentaria-infantil"
             />
             <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-              https://mercadodelemprendedor.com/tienda/{form.slug}
+              https://mercadodelemprendedor.com.ar/tienda/{form.slug}
             </span>
           </label>
         </div>
@@ -172,11 +173,10 @@ export function StoreEditorHeader({
                       stats: { ...form.stats, clients: clientsValue, sales: "" },
                     });
                   }}
-                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    currentTab === "clients"
-                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                  }`}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${currentTab === "clients"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
                 >
                   Clientes
                 </button>
@@ -188,11 +188,10 @@ export function StoreEditorHeader({
                       stats: { ...form.stats, clients: "", sales: salesValue },
                     });
                   }}
-                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                    currentTab === "sales"
-                      ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                  }`}
+                  className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${currentTab === "sales"
+                    ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
                 >
                   Ventas
                 </button>
@@ -228,24 +227,31 @@ export function StoreEditorHeader({
               </div>
             </div>
           </label>
-          {(["location", "yearsInBusiness"] as const).map((key) => {
+          {(["yearsInBusiness"] as const).map((key) => {
             const rawValue = form.stats?.[key] ?? "";
             return (
-              <label key={key} className="block">
+              <label key={key} className="block sm:col-span-2">
                 <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  {key === "location" && "Ubicación"}
                   {key === "yearsInBusiness" && "Tiempo en el negocio"}
                 </span>
-                <input
-                  type="text"
-                  value={rawValue}
-                  onChange={(e) =>
-                    onChange({
-                      stats: { ...form.stats, [key]: e.target.value },
-                    })
+                <div className="flex rounded-lg overflow-hidden border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800">
+                  {
+                    key === "yearsInBusiness" &&
+                    <span className="flex items-center px-3 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 text-sm font-medium">
+                      +
+                    </span>
                   }
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
-                />
+                  <input
+                    type="text"
+                    value={rawValue}
+                    onChange={(e) =>
+                      onChange({
+                        stats: { ...form.stats, [key]: e.target.value },
+                      })
+                    }
+                    className="flex-1 min-w-0 px-3 py-3 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0"
+                  />
+                </div>
               </label>
             );
           })}
@@ -279,11 +285,11 @@ export function StoreEditorHeader({
                     className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-slate-700 text-white text-sm leading-none flex items-center justify-center hover:bg-slate-600"
                     aria-label="Quitar logo"
                   >
-                    ×
+                    <Icon name="close" className="text-white rounded-full h-6 w-6 bg-slate-700" />
                   </button>
                 </div>
               )}
-            </div>        
+            </div>
           </div>
           <div className="block">
             <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -309,10 +315,10 @@ export function StoreEditorHeader({
                   <button
                     type="button"
                     onClick={clearBanner}
-                    className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-slate-700 text-white text-sm leading-none flex items-center justify-center hover:bg-slate-600"
+                    className="absolute -top-1.5 -right-1.5 flex hover:bg-slate-600"
                     aria-label="Quitar banner"
                   >
-                    ×
+                    <Icon name="close" className="text-white rounded-full h-6 w-6 bg-slate-700" />
                   </button>
                 </div>
               )}

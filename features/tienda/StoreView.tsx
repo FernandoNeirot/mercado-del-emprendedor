@@ -24,7 +24,11 @@ export function StoreView({ vendor, products, searchQuery }: StoreViewProps) {
   const [activeTab, setActiveTab] = useState<StoreTab>("catalogo");
   const catalogRef = useRef<HTMLDivElement>(null);
   const hasScrolledForSearch = useRef(false);
-
+  const handleContact = () => {
+    const whatsappMessage = `Hola,%20quisiera%20hacer%20una%20consulta%20por%20tus%20productos\n${encodeURIComponent(vendor.slug)}.%0A${encodeURIComponent(vendor.slug)}`;
+    const linkSeller = `https://wa.me/${vendor?.personalInfo?.phone}?text=${whatsappMessage}`;
+    window.open(linkSeller, "_blank");
+  };
   useEffect(() => {
     if (!searchQuery?.trim() || !catalogRef.current || hasScrolledForSearch.current) return;
     hasScrolledForSearch.current = true;
@@ -37,7 +41,7 @@ export function StoreView({ vendor, products, searchQuery }: StoreViewProps) {
     <>
       <div className="min-h-screen bg-background-light dark:bg-background-dark pb-20 md:pb-10">
         <div className="max-w-[1240px] mx-auto md:px-6 lg:px-8">
-          <StoreHeader vendor={vendor} onContact={() => {}} />
+          <StoreHeader vendor={vendor} onContact={handleContact} />
           <StoreTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
           {activeTab === "catalogo" && (
@@ -48,7 +52,7 @@ export function StoreView({ vendor, products, searchQuery }: StoreViewProps) {
 
           {activeTab === "historia" && (
             <div className="space-y-0">
-              <StoreStory vendor={vendor} isStoreTab={true}      />       
+              <StoreStory vendor={vendor} isStoreTab={true} />
             </div>
           )}
 

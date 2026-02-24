@@ -27,8 +27,10 @@ export function StoreAvailable({ vendor }: StoreAvailableProps) {
         <div className="rounded-xl md:rounded-2xl max-w-[350px] overflow-hidden bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
           <ul className="divide-y divide-slate-100 dark:divide-slate-800">
             {schedule.map((item) => {
+              const displayText =
+                (item?.availability?.trim() || "Cerrado");
               const isClosed =
-                item.availability.toLowerCase().includes("cerrado");
+                displayText.toLowerCase().includes("cerrado");
               return (
                 <li
                   key={item.day}
@@ -43,7 +45,7 @@ export function StoreAvailable({ vendor }: StoreAvailableProps) {
                       : "text-primary dark:text-emerald-500"
                       }`}
                   >
-                    {item.availability}
+                    {displayText}
                   </span>
                 </li>
               );

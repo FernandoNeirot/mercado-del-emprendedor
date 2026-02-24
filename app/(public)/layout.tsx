@@ -1,6 +1,6 @@
 import { Footer } from '@/features/footer'
 import { Header } from '@/features/header'
-import { BottomNav } from '@/features/navigation'
+// import { BottomNav } from '@/features/navigation'
 import { getServerUser } from '@/shared/lib/auth'
 import React from 'react'
 
@@ -17,9 +17,9 @@ export default async function PublicLayout({ children }: { children: React.React
     <div>
       <Header initialUser={user} />
       {children}
-      <div className="md:hidden">
+      {/* <div className="md:hidden">
         <BottomNav currentPath="/" /> 
-      </div>
+      </div> */}
       <Footer />
     </div>
   )

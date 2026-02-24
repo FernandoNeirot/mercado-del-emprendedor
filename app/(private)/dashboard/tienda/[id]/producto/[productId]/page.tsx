@@ -1,7 +1,12 @@
-import { ProductEditorView } from "@/features/dashboard-tienda";
+import {
+  CreateProductRedirect,
+  ProductEditorView,
+} from "@/features/dashboard-tienda";
 import { getProductById, getStoreById } from "@/lib/server-actions";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+
+const SLUG_NUEVO = "nuevo";
 
 interface ProductoEditorPageProps {
   params: Promise<{ id: string; productId: string }>;
@@ -11,6 +16,9 @@ export async function generateMetadata({
   params,
 }: ProductoEditorPageProps): Promise<Metadata> {
   const { productId } = await params;
+  if (productId === SLUG_NUEVO) {
+    return { title: "Nuevo producto | Dashboard" };
+  }
   const product = await getProductById(productId);
   if (!product) return { title: "Producto no encontrado | Dashboard" };
   return { title: `Editar ${product.name} | Dashboard` };
@@ -24,6 +32,10 @@ export default async function ProductoEditorPage({
   const store = await getStoreById(storeIdOrSlug);
   if (!store) {
     redirect("/dashboard");
+  }
+
+  if (productId === SLUG_NUEVO) {
+    return <CreateProductRedirect store={store} />;
   }
 
   const product = await getProductById(productId);

@@ -17,7 +17,7 @@ export function Footer() {
               </p>
             </div>
             <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-8 leading-relaxed">
-              Conectamos el talento local con personas que valoran lo emprendedor.
+              Conectamos el talento local con personas que valoran al emprendedor.
             </p>
             <div className="flex gap-4">
               <a

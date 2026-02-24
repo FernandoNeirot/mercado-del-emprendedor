@@ -17,7 +17,7 @@ function formatPrice(price: number): string {
   }).format(price);
 }
 
-export function StoreProductCard({ product, storeId }: StoreProductCardProps) {
+export function StoreProductCard({ product }: StoreProductCardProps) {
   return (
     <Link
       href={`/product/${product.id}`}

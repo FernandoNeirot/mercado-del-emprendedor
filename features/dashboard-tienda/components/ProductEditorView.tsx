@@ -7,10 +7,21 @@ import { Icon } from "@/shared/components/Icon";
 import { RichTextEditor } from "@/shared/components/RichTextEditor";
 import type { StoreProduct } from "@/features/tienda";
 import type { StoreVendor } from "@/features/tienda";
-import { updateProduct } from "@/lib/server-actions";
+import { updateProduct, uploadProductImage } from "@/lib/server-actions";
 
 const MAX_IMAGES = 3;
 const MAX_SPECS = 10;
+
+/** Normaliza un slug: minúsculas, espacios a guiones, solo letras/números/guiones. */
+function sanitizeSlug(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 type SpecItem = { label: string; value: string };
 
@@ -23,9 +34,15 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [name, setName] = useState(product.name);
+  const storeSlugBase = sanitizeSlug(store.slug || store.name);
+  const [slug, setSlug] = useState(() => {
+    const full = product.slug || product.id;
+    if (!storeSlugBase || !full.endsWith(`-${storeSlugBase}`)) return full;
+    return full.slice(0, -(storeSlugBase.length + 1));
+  });
   const [price, setPrice] = useState(String(product.price));
   const [category, setCategory] = useState(product.category);
-  const [description, setDescription] = useState(product.description ?? "");
+
   const [richDescription, setRichDescription] = useState(
     product.richDescription ?? ""
   );
@@ -97,17 +114,9 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
         if (file && file instanceof File && file.size > 0) {
           const formData = new FormData();
           formData.append("image", file);
-          const baseUrl =
-            typeof window !== "undefined"
-              ? window.location.origin
-              : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-          const res = await fetch(
-            `${baseUrl}/api/products/${product.id}/images?folder=products/${product.id}`,
-            { method: "POST", body: formData }
-          );
-          const json = await res.json();
-          if (json.success && json.data?.url) {
-            finalImages.push(json.data.url);
+          const result = await uploadProductImage(product.id, formData);
+          if (result.success && result.data?.url) {
+            finalImages.push(result.data.url);
           }
         } else if (existingUrl) {
           finalImages.push(existingUrl);
@@ -118,13 +127,23 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
         .filter((s) => s.label.trim() || s.value.trim())
         .map((s) => ({ label: s.label.trim(), value: s.value.trim() }));
 
-      const productIdentifier = product.slug || product.id;
-      const updated = await updateProduct(productIdentifier, {
+      const baseSlug = sanitizeSlug(slug) || product.id;
+      const finalSlug = storeSlugBase
+        ? `${baseSlug}-${storeSlugBase}`
+        : `${baseSlug}-${product.id}`;
+
+      const richDescValue =
+        richDescription.trim() === "" || richDescription.trim() === "<p></p>"
+          ? ""
+          : richDescription.trim();
+
+      const updated = await updateProduct(product.id, {
         name: name.trim(),
+        slug: finalSlug,
         price: parseFloat(price) || 0,
         category: category.trim() || "general",
-        description: description.trim(),
-        richDescription: richDescription.trim() || undefined,
+        description: "",
+        richDescription: richDescValue,
         images: finalImages,
         imageUrl: finalImages[0] ?? "",
         specs: validSpecs.length > 0 ? validSpecs : undefined,
@@ -176,6 +195,23 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
                 />
               </label>
 
+              <label className="block">
+                <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
+                  Slug (URL)
+                </span>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white font-mono text-sm"
+                  placeholder="ej. remera-algodon-negra"
+                />
+                <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono break-all">
+                  https://mercadodelemprendedor.com/tienda/{store.slug}/producto/
+                  {(slug.trim() || "tu-texto")}-{store.slug}
+                </span>
+              </label>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block">
                   <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -205,7 +241,7 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
                 </label>
               </div>
 
-              <label className="block">
+              <div className="block">
                 <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                   Descripción Completa
                 </span>
@@ -214,7 +250,7 @@ export function ProductEditorView({ product, store }: ProductEditorViewProps) {
                   onChange={setRichDescription}
                   placeholder="Descripción del producto..."
                 />
-              </label>
+              </div>
 
               <div>
                 <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">

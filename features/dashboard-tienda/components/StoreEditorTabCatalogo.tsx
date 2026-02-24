@@ -33,24 +33,42 @@ export function StoreEditorTabCatalogo({ vendor, products }: StoreEditorTabCatal
     );
   }
 
+  const addProductHref = `/dashboard/tienda/${vendor.slug}/producto/nuevo`;
+
   if (products.length === 0) {
     return (
       <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Catálogo de productos
         </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Aún no hay productos. Podés agregar productos desde aquí (próximamente).
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+          Aún no hay productos. Agregá tu primer producto para empezar a vender.
         </p>
+        <Link
+          href={addProductHref}
+          className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold transition-colors"
+        >
+          <Icon name="add" className="text-xl" />
+          Agregar producto
+        </Link>
       </section>
     );
   }
 
   return (
     <section className="p-4 md:p-6 lg:p-8 pb-8 md:pb-12 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl">
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
-        Catálogo de productos
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+          Catálogo de productos
+        </h2>
+        <Link
+          href={addProductHref}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors shrink-0"
+        >
+          <Icon name="add" className="text-lg" />
+          Agregar producto
+        </Link>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
         {products.map((p) => {
           const imageUrl = (p.images?.[0] ?? p.imageUrl) || "";
@@ -73,7 +91,7 @@ export function StoreEditorTabCatalogo({ vendor, products }: StoreEditorTabCatal
                   </div>
                 )}
                 <Link
-                  href={`/dashboard/tienda/${vendor.slug}/producto/${p.slug}`}
+                  href={`/dashboard/tienda/${vendor.slug}/producto/${p.slug || p.id}`}
                   className="absolute bottom-2 left-2 right-2 flex items-center justify-center gap-2 py-2 rounded-lg bg-primary/90 hover:bg-primary text-white font-semibold text-sm transition-colors"
                 >
                   <Icon name="edit" className="text-base" />

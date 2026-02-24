@@ -33,16 +33,10 @@ const defaultNavItems: NavItem[] = [
     href: "/",
   },
   {
-    id: "favorites",
-    label: "Favoritos",
-    icon: "favorite",
-    href: "/",
-  },
-  {
     id: "profile",
     label: "Perfil",
     icon: "person",
-    href: "/",
+    href: "/dashboard",
   },
 ];
 
@@ -50,33 +44,33 @@ export function BottomNav({ items = defaultNavItems, currentPath }: BottomNavPro
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white/90 backdrop-blur-xl border-t border-slate-100 pb-8 pt-3 px-10 z-70 dark:bg-gradient-to-t dark:from-gray-900 dark:via-gray-800 dark:to-gray-700" >
       <div className="flex justify-between items-center">
-      {items.map((item) => {
-        const isActive = currentPath === item.href || item.active;
-        return (
-        <Link
-          key={item.id}
-          href={item.href}
-          className={cn(
-          "flex flex-col items-center gap-1",
-          isActive ? "text-primary" : "text-slate-400"
-          )}
-        >
-          <Icon
-          name={item.icon}
-          className="text-2xl"
-          filled={isActive}
-          />
-          <span
-          className={cn(
-            "text-[10px]",
-            isActive ? "font-bold" : "font-medium"
-          )}
-          >
-          {item.label}
-          </span>
-        </Link>
-        );
-      })}
+        {items.map((item) => {
+          const isActive = currentPath === item.href || item.active;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex flex-col items-center gap-1",
+                isActive ? "text-primary" : "text-slate-400"
+              )}
+            >
+              <Icon
+                name={item.icon}
+                className="text-2xl"
+                filled={isActive}
+              />
+              <span
+                className={cn(
+                  "text-[10px]",
+                  isActive ? "font-bold" : "font-medium"
+                )}
+              >
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

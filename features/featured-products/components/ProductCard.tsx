@@ -35,7 +35,7 @@ export function ProductCard({
   price,
   href,
   onView,
-  onFavorite,
+  // onFavorite,
 }: ProductCardProps) {
   const actionContent = (
     <>
@@ -53,7 +53,7 @@ export function ProductCard({
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           src={product.imageUrl}
         />
-        <button
+        {/* <button
           type="button"
           onClick={() => onFavorite?.(product.id)}
           className="absolute top-2 right-2 md:top-3 md:right-3 "
@@ -62,7 +62,7 @@ export function ProductCard({
             name="favorite"
             className="text-base md:text-[20px] bg-white/90 backdrop-blur p-1.5 md:p-2 rounded-full shadow-sm text-slate-400 hover:text-red-500 transition-colors"
           />
-        </button>
+        </button> */}
       </div>
       <div className="p-3 md:p-5 flex flex-col flex-1">
         <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">

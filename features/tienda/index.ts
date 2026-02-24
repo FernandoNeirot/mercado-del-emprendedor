@@ -1,6 +1,6 @@
 export { StoreView } from "./StoreView";
 export { getStoreById, getStoreProducts } from "./data";
-export type { StoreVendor, StoreProduct } from "./types";
+export type { StoreVendor, StoreProduct, StoreAvailability } from "./types";
 export { StoreTopBar } from "./components/StoreTopBar";
 export { StoreHeader } from "./components/StoreHeader";
 export { StoreTabs, type StoreTab } from "./components/StoreTabs";

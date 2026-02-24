@@ -51,7 +51,6 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
 
   const isCreating = !store?.id;
 
-  /** Carpeta en Storage = tienda/{id} (id de la tienda, no el nombre). */
   const storeFolder = store?.id ? `tienda/${store.id}` : null;
 
   const handleChange = (updates: Partial<StoreFormState>) => {
@@ -108,7 +107,6 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
           return;
         }
 
-        // Solo subir al storage si el usuario eligió un archivo nuevo; si no, conservar las URLs actuales.
         const hasNewLogo = logoFile && logoFile instanceof File && logoFile.size > 0;
         const hasNewBanner = bannerFile && bannerFile instanceof File && bannerFile.size > 0;
 
@@ -133,7 +131,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
 
         const updated = await updateStore(currentSlug, payload);
         setForm((prev) => ({ ...prev, ...updated }));
-          router.replace("/dashboard");
+        router.replace("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error al guardar";
         alert(message);
@@ -180,11 +178,10 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
                   key={id}
                   type="button"
                   onClick={() => setActiveTab(id)}
-                  className={`flex-1 py-3.5 md:py-4 text-sm md:text-base font-semibold transition-colors ${
-                    activeTab === id
+                  className={`flex-1 py-3.5 md:py-4 text-sm md:text-base font-semibold transition-colors ${activeTab === id
                       ? "text-slate-900 dark:text-white border-b-2 border-primary dark:border-emerald-400"
                       : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
-                  }`}
+                    }`}
                 >
                   {label}
                 </button>

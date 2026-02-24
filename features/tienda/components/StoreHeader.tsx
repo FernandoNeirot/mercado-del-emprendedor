@@ -75,7 +75,7 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
           </span>
         </p>
 
-        <div className="grid grid-cols-3 gap-4 md:gap-8 mt-6 md:mt-8 max-w-md mx-auto">
+        <div className="grid grid-cols-2 gap-4 md:gap-8 mt-6 md:mt-8 max-w-md mx-auto">
           {
             vendor.stats.clients && (
               <div className="text-center">
@@ -113,20 +113,6 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
               </div>
             )
           }
-
-          {
-            vendor.stats.location && (
-              <div className="text-center">
-                <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg">
-                  {vendor.stats.location}
-                </p>
-                <p className="text-[10px] md:text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">
-                  Ubicación
-                </p>
-              </div>
-            )
-          }
-
         </div>
 
         <button
