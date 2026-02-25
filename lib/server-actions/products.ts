@@ -47,6 +47,76 @@ export async function uploadProductImage(
   }
 }
 
+export type CreateProductData = {
+  name: string;
+  slug: string;
+  price: number;
+  category: string;
+  description?: string;
+  richDescription?: string;
+  specs?: StoreProduct["specs"];
+};
+
+/** Crea un producto con los datos indicados (sin crear uno automático). */
+export async function createProductWithData(
+  storeId: string,
+  data: CreateProductData
+): Promise<StoreProduct | null> {
+  try {
+    const db = getAdminFirestore();
+    const slugFinal = data.slug.trim() || "";
+    const docRef = await db.collection("products").add({
+      storeId,
+      name: data.name.trim() || "",
+      slug: slugFinal || "",
+      price: data.price,
+      category: data.category.trim() || "",
+      imageUrl: "",
+      images: [],
+      description: data.description ?? "",
+      richDescription: data.richDescription ?? "",
+      specs: data.specs ?? [],
+      stock: 0,
+      featured: false,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+    if (!slugFinal) await docRef.update({ slug: docRef.id });
+    const snap = await docRef.get();
+    const d = snap.data() as Record<string, unknown>;
+    const toStr = (v: unknown): string =>
+      v == null
+        ? ""
+        : typeof v === "string"
+          ? v
+          : (v as { toDate?: () => Date })?.toDate?.()?.toISOString?.() ?? String(v);
+    return {
+      id: snap.id,
+      name: (d.name as string) ?? "",
+      price: (d.price as number) ?? 0,
+      category: (d.category as string) ?? "",
+      imageUrl: (d.imageUrl as string) ?? "",
+      storeId: (d.storeId as string) ?? "",
+      slug: (d.slug as string) ?? snap.id,
+      description: (d.description as string) ?? "",
+      richDescription: d.richDescription as string | undefined,
+      compareAtPrice: d.compareAtPrice as number | undefined,
+      images: Array.isArray(d.images) ? (d.images as string[]) : [],
+      sku: d.sku as string | undefined,
+      stock: (d.stock as number) ?? 0,
+      featured: (d.featured as boolean) ?? false,
+      variants: d.variants as StoreProduct["variants"],
+      specs: (d.specs as StoreProduct["specs"]) ?? [],
+      ratings: d.ratings as StoreProduct["ratings"],
+      createdAt: toStr(d.createdAt),
+      updatedAt: toStr(d.updatedAt),
+    };
+  } catch (err) {
+    console.error("[createProductWithData]", err);
+    return null;
+  }
+}
+
 export async function createProduct(storeId: string): Promise<StoreProduct | null> {
   try {
     const db = getAdminFirestore();

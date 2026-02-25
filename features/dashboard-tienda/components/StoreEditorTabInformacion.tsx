@@ -74,12 +74,27 @@ export function StoreEditorTabInformacion({ form, onChange }: StoreEditorTabInfo
               <span className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
                 {label}
               </span>
-              <input
-                type="text"
-                value={personal[key] ?? ""}
-                onChange={(e) => setPersonal(key, e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
-              />
+              {key === "phone" ? (
+                <div className="flex rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 overflow-hidden">
+                  <span className="inline-flex items-center px-3 py-2 text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 border-r border-slate-200 dark:border-slate-600 font-medium">
+                    +54
+                  </span>
+                  <input
+                    type="text"
+                    value={personal[key] ?? ""}
+                    onChange={(e) => setPersonal(key, e.target.value)}
+                    className="flex-1 min-w-0 px-3 py-2 bg-transparent text-slate-900 dark:text-white border-0 focus:ring-0 focus:outline-none"
+                    placeholder="11 1234-5678"
+                  />
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={personal[key] ?? ""}
+                  onChange={(e) => setPersonal(key, e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-white"
+                />
+              )}
             </label>
           ))}
         </div>

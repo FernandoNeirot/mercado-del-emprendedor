@@ -10,5 +10,6 @@ export {
   getProductById,
   updateProduct,
   createProduct,
+  createProductWithData,
   uploadProductImage,
 } from "./products";

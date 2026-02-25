@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@/shared/components/Icon";
 import type { StoreTab } from "@/features/tienda/components/StoreTabs";
 import type { StoreVendor, StoreProduct } from "@/features/tienda";
+import { toast } from "sonner";
 import { createStore, updateStore, uploadStoreImage } from "@/lib/server-actions";
 import { StoreEditorHeader } from "./components/StoreEditorHeader";
 import { StoreEditorTabHistoria } from "./components/StoreEditorTabHistoria";
@@ -134,7 +135,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
         router.replace("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error al guardar";
-        alert(message);
+        toast.error(message);
       }
     });
   };
@@ -161,42 +162,45 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
             onBannerFileChange={setBannerFile}
             initialBannerUrl={store?.bannerUrl}
           />
+          {!isCreating && (
+            <>
+              <nav
+                className="sticky top-[80px] z-30 flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-t-2xl overflow-hidden"
+                aria-label="Secciones de la tienda"
+              >
+                <div className="flex w-full md:max-w-md md:mx-auto">
+                  {(
+                    [
+                      { id: "catalogo" as const, label: "Catálogo" },
+                      { id: "historia" as const, label: "Mi Historia" },
+                      { id: "informacion" as const, label: "Información" },
+                    ] as const
+                  ).map(({ id, label }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setActiveTab(id)}
+                      className={`flex-1 py-3.5 md:py-4 text-sm md:text-base font-semibold transition-colors ${activeTab === id
+                        ? "text-slate-900 dark:text-white border-b-2 border-primary dark:border-emerald-400"
+                        : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                        }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
 
-          <nav
-            className="sticky top-[80px] z-30 flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-t-2xl overflow-hidden"
-            aria-label="Secciones de la tienda"
-          >
-            <div className="flex w-full md:max-w-md md:mx-auto">
-              {(
-                [
-                  { id: "catalogo" as const, label: "Catálogo" },
-                  { id: "historia" as const, label: "Mi Historia" },
-                  { id: "informacion" as const, label: "Información" },
-                ] as const
-              ).map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setActiveTab(id)}
-                  className={`flex-1 py-3.5 md:py-4 text-sm md:text-base font-semibold transition-colors ${activeTab === id
-                      ? "text-slate-900 dark:text-white border-b-2 border-primary dark:border-emerald-400"
-                      : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
-                    }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </nav>
-
-          {activeTab === "catalogo" && (
-            <StoreEditorTabCatalogo vendor={store} products={products} />
-          )}
-          {activeTab === "historia" && (
-            <StoreEditorTabHistoria form={form} onChange={handleChange} />
-          )}
-          {activeTab === "informacion" && (
-            <StoreEditorTabInformacion form={form} onChange={handleChange} />
+              {activeTab === "catalogo" && (
+                <StoreEditorTabCatalogo vendor={store} products={products} />
+              )}
+              {activeTab === "historia" && (
+                <StoreEditorTabHistoria form={form} onChange={handleChange} />
+              )}
+              {activeTab === "informacion" && (
+                <StoreEditorTabInformacion form={form} onChange={handleChange} />
+              )}
+            </>
           )}
 
           <div className="flex justify-end gap-3 pt-4">

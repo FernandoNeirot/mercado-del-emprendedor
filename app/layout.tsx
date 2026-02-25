@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/providers/ThemeProvider";
 import { JsonLd, EmailVerificationHandler } from "@/shared/components";
@@ -114,6 +115,7 @@ export default function RootLayout({
         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         <ThemeProvider>
+          <Toaster richColors position="bottom-center" closeButton />
           <Suspense fallback={null}>
             <EmailVerificationHandler />
           </Suspense>

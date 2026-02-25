@@ -1,8 +1,9 @@
+import { ProductEditorView } from "@/features/dashboard-tienda";
 import {
-  CreateProductRedirect,
-  ProductEditorView,
-} from "@/features/dashboard-tienda";
-import { getProductById, getStoreById } from "@/lib/server-actions";
+  getProductById,
+  getProductsByStoreId,
+  getStoreById,
+} from "@/lib/server-actions";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -35,7 +36,10 @@ export default async function ProductoEditorPage({
   }
 
   if (productId === SLUG_NUEVO) {
-    return <CreateProductRedirect store={store} />;
+    const products = await getProductsByStoreId(store.id);
+    return (
+      <ProductEditorView product={null} store={store} storeProducts={products} />
+    );
   }
 
   const product = await getProductById(productId);
