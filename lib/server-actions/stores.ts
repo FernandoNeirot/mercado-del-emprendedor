@@ -2,20 +2,33 @@
 
 import { cache } from "react";
 import type { StoreVendor } from "@/features/tienda";
+import type { DocumentSnapshot } from "firebase-admin/firestore";
 import { getAdminFirestore } from "@/shared/configs/firebase-admin";
 import { getServerUser } from "@/shared/lib/auth";
 import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
-import { getBaseUrl } from "@/shared/configs/seo";
-import { CACHE_REVALIDATE_24H } from "./constants";
+function docToStoreVendor(doc: DocumentSnapshot): StoreVendor {
+  const data = doc.data();
+  if (!data) throw new Error("Store document has no data");
+  const createdAt = data.createdAt?.toDate?.() ?? data.createdAt;
+  return { id: doc.id, ...data, createdAt } as StoreVendor;
+}
 
 export const getStoreById = cache(async (idOrSlug: string): Promise<StoreVendor | null> => {
   try {
-    const response = await fetch(
-      `${getBaseUrl()}/api/stores/${idOrSlug}`,
-      { method: "GET", next: { revalidate: CACHE_REVALIDATE_24H } }
-    );
-    const json = await response.json();
-    return (json.data as StoreVendor) ?? null;
+    const db = getAdminFirestore();
+    const docRef = db.collection("stores").doc(idOrSlug);
+    const docSnap = await docRef.get();
+    if (docSnap.exists) {
+      return docToStoreVendor(docSnap);
+    }
+    const snapshot = await db
+      .collection("stores")
+      .where("slug", "==", idOrSlug)
+      .limit(1)
+      .get();
+    const doc = snapshot.docs[0];
+    if (!doc) return null;
+    return docToStoreVendor(doc);
   } catch (err) {
     console.error("[getStoreById]", err);
     return null;

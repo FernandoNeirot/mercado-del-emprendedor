@@ -3,11 +3,43 @@
 import { revalidatePath } from "next/cache";
 import { cache } from "react";
 import type { StoreProduct } from "@/features/tienda";
-import { getBaseUrl } from "@/shared/configs/seo";
 import { optimizeAndUploadImage } from "@/shared/lib/uploadImageServer";
-import { CACHE_REVALIDATE_24H } from "./constants";
+import type { DocumentSnapshot } from "firebase-admin/firestore";
 import { getAdminFirestore } from "@/shared/configs/firebase-admin";
 import { FieldValue } from "firebase-admin/firestore";
+
+const toStr = (v: unknown): string =>
+  v == null
+    ? ""
+    : typeof v === "string"
+      ? v
+      : (v as { toDate?: () => Date })?.toDate?.()?.toISOString?.() ?? String(v);
+
+function docToStoreProduct(snap: DocumentSnapshot): StoreProduct {
+  const d = snap.data() as Record<string, unknown>;
+  if (!d) throw new Error("Product document has no data");
+  return {
+    id: snap.id,
+    name: (d.name as string) ?? "",
+    price: (d.price as number) ?? 0,
+    category: (d.category as string) ?? "",
+    imageUrl: (d.imageUrl as string) ?? "",
+    storeId: (d.storeId as string) ?? "",
+    slug: (d.slug as string) ?? "",
+    description: (d.description as string) ?? "",
+    richDescription: d.richDescription as string | undefined,
+    compareAtPrice: d.compareAtPrice as number | undefined,
+    images: Array.isArray(d.images) ? (d.images as string[]) : [],
+    sku: d.sku as string | undefined,
+    stock: (d.stock as number) ?? 0,
+    featured: (d.featured as boolean) ?? false,
+    variants: d.variants as StoreProduct["variants"],
+    specs: d.specs as StoreProduct["specs"],
+    ratings: d.ratings as StoreProduct["ratings"],
+    createdAt: toStr(d.createdAt),
+    updatedAt: toStr(d.updatedAt),
+  };
+}
 
 export type UploadProductImageResult =
   | { success: true; data: { url: string } }
@@ -173,24 +205,37 @@ export async function createProduct(storeId: string): Promise<StoreProduct | nul
 
 export const getProductsByStoreId = cache(
   async (storeId: string): Promise<StoreProduct[]> => {
-    const productsResponse = await fetch(
-      `${getBaseUrl()}/api/products/byStore/${storeId}`,
-      { method: "GET", next: { revalidate: CACHE_REVALIDATE_24H } }
-    );
-    const productsData = await productsResponse.json();
-    return (productsData.data as StoreProduct[]) ?? [];
+    try {
+      const db = getAdminFirestore();
+      const snapshot = await db
+        .collection("products")
+        .where("storeId", "==", storeId)
+        .get();
+      return snapshot.docs.map((doc) => docToStoreProduct(doc));
+    } catch (err) {
+      console.error("[getProductsByStoreId]", err);
+      return [];
+    }
   }
 );
 
 export const getProductById = cache(
   async (idOrSlug: string): Promise<StoreProduct | null> => {
     try {
-      const response = await fetch(
-        `${getBaseUrl()}/api/products/${idOrSlug}`,
-        { method: "GET", next: { revalidate: CACHE_REVALIDATE_24H } }
-      );
-      const json = await response.json();
-      return (json.data as StoreProduct) ?? null;
+      const db = getAdminFirestore();
+      const docRef = db.collection("products").doc(idOrSlug);
+      const docSnap = await docRef.get();
+      if (docSnap.exists) {
+        return docToStoreProduct(docSnap);
+      }
+      const bySlug = await db
+        .collection("products")
+        .where("slug", "==", idOrSlug)
+        .limit(1)
+        .get();
+      const doc = bySlug.docs[0];
+      if (!doc) return null;
+      return docToStoreProduct(doc);
     } catch (err) {
       console.error("[getProductById]", err);
       return null;
@@ -232,38 +277,8 @@ export async function updateProduct(
     revalidatePath("/dashboard/tienda", "layout");
 
     const updated = await docRef.get();
-    const raw = updated.data();
-    if (!raw) return null;
-
-    const d = raw as Record<string, unknown>;
-    const toStr = (v: unknown): string =>
-      v == null
-        ? ""
-        : typeof v === "string"
-          ? v
-          : (v as { toDate?: () => Date })?.toDate?.()?.toISOString?.() ?? String(v);
-
-    return {
-      id: updated.id,
-      name: (d.name as string) ?? "",
-      price: (d.price as number) ?? 0,
-      category: (d.category as string) ?? "",
-      imageUrl: (d.imageUrl as string) ?? "",
-      storeId: (d.storeId as string) ?? "",
-      slug: (d.slug as string) ?? "",
-      description: (d.description as string) ?? "",
-      richDescription: d.richDescription as string | undefined,
-      compareAtPrice: d.compareAtPrice as number | undefined,
-      images: Array.isArray(d.images) ? (d.images as string[]) : [],
-      sku: d.sku as string | undefined,
-      stock: (d.stock as number) ?? 0,
-      featured: (d.featured as boolean) ?? false,
-      variants: d.variants as StoreProduct["variants"],
-      specs: d.specs as StoreProduct["specs"],
-      ratings: d.ratings as StoreProduct["ratings"],
-      createdAt: toStr(d.createdAt),
-      updatedAt: toStr(d.updatedAt),
-    };
+    if (!updated.exists) return null;
+    return docToStoreProduct(updated);
   } catch (err) {
     console.error("[updateProduct]", err);
     return null;
