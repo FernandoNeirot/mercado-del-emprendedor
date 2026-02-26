@@ -22,12 +22,16 @@ export function StoreStory({ vendor, isStoreTab }: StoreStoryProps) {
     >
       <div className="flex items-start gap-4 md:gap-6 w-full max-w-xl mx-auto">
         <div className="shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={vendor?.logoUrl ?? ""}
-            alt={vendor.name}
-            className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700"
-          />
+          {(vendor?.logoUrl?.trim()) ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={vendor.logoUrl!.trim()}
+              alt={vendor.name}
+              className="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700"
+            />
+          ) : (
+            <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-100 dark:border-slate-700" aria-hidden />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <h2 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">

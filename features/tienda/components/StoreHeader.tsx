@@ -11,7 +11,9 @@ interface StoreHeaderProps {
 }
 
 export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
-  const hasBanner = Boolean(vendor?.bannerUrl);
+  const bannerUrl = vendor?.bannerUrl?.trim() || undefined;
+  const logoUrl = vendor?.logoUrl?.trim() || undefined;
+  const hasBanner = Boolean(bannerUrl);
 
   return (
     <header className="relative bg-slate-100 dark:bg-slate-900 overflow-hidden">
@@ -20,7 +22,7 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={vendor.bannerUrl}
+              src={bannerUrl}
               alt=""
               className="w-full h-full object-cover"
             />
@@ -46,12 +48,18 @@ export function StoreHeader({ vendor, onContact }: StoreHeaderProps) {
       {/* Logo en tarjeta blanca superpuesta al banner */}
       <div className="relative z-20 flex justify-center pt-24 md:pt-28 lg:pt-32 pb-0">
         <div className="bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl p-2 md:p-2.5 shadow-xl border border-slate-100 dark:border-slate-700 -mb-8 md:-mb-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={vendor?.logoUrl ?? ""}
-            alt={vendor.name}
-            className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-xl md:rounded-2xl object-cover"
-          />
+          {logoUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={logoUrl}
+              alt={vendor.name}
+              className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-xl md:rounded-2xl object-cover"
+            />
+          ) : (
+            <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-xl md:rounded-2xl bg-slate-200 dark:bg-slate-700 flex items-center justify-center" aria-hidden>
+              <Icon name="store" className="text-3xl md:text-4xl text-slate-400 dark:text-slate-500" />
+            </div>
+          )}
         </div>
       </div>
 

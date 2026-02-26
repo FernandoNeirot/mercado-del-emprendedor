@@ -18,9 +18,9 @@ function formatPrice(price: number): string {
 }
 
 function getProductImages(product: StoreProduct): string[] {
-  const fromArray = (product.images ?? []).slice(0, MAX_IMAGES);
+  const fromArray = (product.images ?? []).filter((url): url is string => Boolean(url?.trim())).slice(0, MAX_IMAGES);
   if (fromArray.length > 0) return fromArray;
-  if (product.imageUrl) return [product.imageUrl];
+  if (product.imageUrl?.trim()) return [product.imageUrl.trim()];
   return [];
 }
 
@@ -93,12 +93,14 @@ export function ProductView({ product, vendor }: ProductViewProps) {
                       : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500"
                       }`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={src}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    {src ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={src}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : null}
                   </button>
                 ))}
               </div>
@@ -181,12 +183,18 @@ export function ProductView({ product, vendor }: ProductViewProps) {
           </p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-4 shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={vendor.logoUrl ?? ""}
-                alt={vendor.name}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border border-slate-100 dark:border-slate-600"
-              />
+              {(vendor.logoUrl?.trim()) ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={vendor.logoUrl.trim()}
+                  alt={vendor.name}
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border border-slate-100 dark:border-slate-600"
+                />
+              ) : (
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-slate-200 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 flex items-center justify-center" aria-hidden>
+                  <Icon name="store" className="text-2xl text-slate-400 dark:text-slate-500" />
+                </div>
+              )}
               <div>
                 <h2 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                   {vendor.name}
