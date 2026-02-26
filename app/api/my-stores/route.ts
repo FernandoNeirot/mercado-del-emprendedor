@@ -44,7 +44,10 @@ export async function GET(request: NextRequest) {
     res.headers.set("X-Served-At", String(servedAt));
     return res;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Error listing stores";
+    // En producción Next puede ocultar el mensaje; registrar el error completo en logs del servidor.
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error("[GET /api/my-stores]", err.message, err.stack);
+    const errorMessage = err.message;
     return NextResponse.json({ data: null, error: errorMessage }, { status: 500 });
   }
 }
