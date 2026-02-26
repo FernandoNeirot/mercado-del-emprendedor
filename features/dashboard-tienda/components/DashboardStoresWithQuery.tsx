@@ -5,14 +5,11 @@ import { DashboardStoreList } from "./DashboardStoreList";
 import { useMyStores } from "@/lib/hooks/useMyStores";
 
 /**
- * Carga la lista de tiendas con GET /api/my-stores vía React Query.
- * Para validar caché: al volver al dashboard no debe aparecer nueva petición
- * en Network ni nuevo "GET /api/my-stores" en la terminal; el "Servido a" no cambia.
+ * Carga la lista de tiendas con la server action getStores vía React Query.
  */
 export function DashboardStoresWithQuery() {
   const { data, isLoading, error, isFetching } = useMyStores();
-  const stores = data?.data ?? [];
-  const servedAt = data?._servedAt;
+  const stores = data ?? [];
 
   if (error) {
     const message = error instanceof Error ? error.message : "Error al cargar tiendas";
@@ -39,11 +36,9 @@ export function DashboardStoresWithQuery() {
 
   return (
     <div className="space-y-2">
-      {/* Ayuda para validar fetch vs caché: si al volver al dashboard este valor no cambia = caché */}
-      {typeof servedAt === "number" && (
+      {isFetching && (
         <p className="text-xs text-slate-400 dark:text-slate-500" aria-hidden>
-          Servido a: {new Date(servedAt).toLocaleTimeString()}
-          {isFetching ? " (actualizando…)" : " (desde caché si no cambió)"}
+          Actualizando…
         </p>
       )}
       <DashboardStoreList stores={stores} />
