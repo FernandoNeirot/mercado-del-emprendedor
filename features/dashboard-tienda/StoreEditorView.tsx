@@ -1,11 +1,14 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/shared/components/Icon";
 import type { StoreTab } from "@/features/tienda/components/StoreTabs";
 import type { StoreVendor, StoreProduct } from "@/features/tienda";
+import { queryKeys } from "@/lib/query-keys";
+import { getProductsByStoreId } from "@/lib/server-actions";
 import { toast } from "sonner";
 import { createStore, updateStore, uploadStoreImage } from "@/lib/server-actions";
 import { StoreEditorHeader } from "./components/StoreEditorHeader";
@@ -50,8 +53,15 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-  const isCreating = !store?.id;
+  const { data: productsData } = useQuery({
+    queryKey: queryKeys.products(store?.id ?? ""),
+    queryFn: () => getProductsByStoreId(store!.id),
+    initialData: store ? products : undefined,
+    enabled: !!store?.id,
+  });
+  const productsList = store ? (productsData ?? products) : [];
 
+  const isCreating = !store?.id;
   const storeFolder = store?.id ? `tienda/${store.id}` : null;
 
   const handleChange = (updates: Partial<StoreFormState>) => {
@@ -192,7 +202,7 @@ export function StoreEditorView({ store, products, currentSlug }: StoreEditorVie
               </nav>
 
               {activeTab === "catalogo" && (
-                <StoreEditorTabCatalogo vendor={store} products={products} />
+                <StoreEditorTabCatalogo vendor={store} products={productsList} />
               )}
               {activeTab === "historia" && (
                 <StoreEditorTabHistoria form={form} onChange={handleChange} />

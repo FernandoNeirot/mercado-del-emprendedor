@@ -86,15 +86,28 @@ export async function getUidFromRequest(request: NextRequest): Promise<string | 
     const cookieHeader = request.headers.get("cookie") ?? "";
     const match = cookieHeader.match(new RegExp(`${SESSION_COOKIE_NAME}=([^;]+)`));
     const raw = match?.[1] ? decodeURIComponent(match[1]) : null;
-    if (!raw) return null;
+    if (!raw) {
+      if (process.env.NODE_ENV === "production") {
+        console.warn("[getUidFromRequest] No cookie __session in request (user may need to log in on this domain)");
+      }
+      return null;
+    }
     const payload = decodeSessionPayload(raw);
     const token = payload?.t ?? null;
-    if (!token) return null;
+    if (!token) {
+      if (process.env.NODE_ENV === "production") {
+        console.warn("[getUidFromRequest] Cookie __session present but no token inside");
+      }
+      return null;
+    }
     const app = initializeAdminApp();
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(token);
     return decodedToken.uid;
-  } catch {
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[getUidFromRequest] verifyIdToken failed:", err instanceof Error ? err.message : err);
+    }
     return null;
   }
 }

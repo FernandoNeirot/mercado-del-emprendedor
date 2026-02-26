@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,6 +8,7 @@ import { Icon } from "@/shared/components/Icon";
 import { RichTextEditor } from "@/shared/components/RichTextEditor";
 import type { StoreProduct } from "@/features/tienda";
 import type { StoreVendor } from "@/features/tienda";
+import { queryKeys } from "@/lib/query-keys";
 import { toast } from "sonner";
 import {
   updateProduct,
@@ -43,6 +45,7 @@ export function ProductEditorView({
   storeProducts = [],
 }: ProductEditorViewProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const isCreating = product === null;
   const [isSaving, setIsSaving] = useState(false);
   const [name, setName] = useState(product?.name ?? "");
@@ -224,7 +227,15 @@ export function ProductEditorView({
           images: finalImages,
           imageUrl: finalImages[0] ?? "",
         });
-        router.refresh();
+        const newProduct: StoreProduct = {
+          ...created,
+          images: finalImages,
+          imageUrl: finalImages[0] ?? "",
+        };
+        queryClient.setQueryData<StoreProduct[]>(
+          queryKeys.products(store.id),
+          (old) => [...(old ?? []), newProduct]
+        );
         router.replace(`/dashboard/tienda/${store.slug}`);
         return;
       }
@@ -266,7 +277,11 @@ export function ProductEditorView({
         });
 
         if (updated) {
-          router.refresh();
+          queryClient.setQueryData<StoreProduct[]>(
+            queryKeys.products(store.id),
+            (old) =>
+              (old ?? []).map((p) => (p.id === productId ? { ...p, ...updated } : p))
+          );
           router.push(`/dashboard/tienda/${store.slug}`);
         } else {
           toast.error("Error al guardar el producto");

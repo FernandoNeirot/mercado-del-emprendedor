@@ -6,11 +6,15 @@ import { NextResponse } from "next/server";
  */
 export const SESSION_COOKIE_NAME = "__session";
 
+/** Dominio opcional para la cookie (ej. ".tudominio.com") para que funcione en www y sin www. No definir en local. */
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN ?? undefined;
+
 export const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
   path: "/",
+  ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
 };
 
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 5; // 5 días

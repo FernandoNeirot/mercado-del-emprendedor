@@ -1,6 +1,12 @@
+import {
+  HydrationBoundary,
+  dehydrate,
+} from "@tanstack/react-query";
 import { StoreEditorView } from "@/features/dashboard-tienda";
-import { redirect } from "next/navigation";
+import { queryKeys } from "@/lib/query-keys";
+import { getServerQueryClient } from "@/lib/query-client";
 import { getProductsByStoreId, getStoreById } from "@/lib/server-actions";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
 const SLUG_NUEVA = "nueva";
@@ -43,13 +49,27 @@ export default async function DashboardTiendaPage({
     redirect("/dashboard/tienda/nueva");
   }
 
-  const products = await getProductsByStoreId(store.id);
+  const queryClient = getServerQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.store(id),
+    queryFn: () => getStoreById(id),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.products(store.id),
+    queryFn: () => getProductsByStoreId(store.id),
+  });
+  const products =
+    queryClient.getQueryData<Awaited<ReturnType<typeof getProductsByStoreId>>>(
+      queryKeys.products(store.id)
+    ) ?? [];
 
   return (
-    <StoreEditorView
-      store={store}
-      products={products}
-      currentSlug={store.slug}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <StoreEditorView
+        store={store}
+        products={products}
+        currentSlug={store.slug}
+      />
+    </HydrationBoundary>
   );
 }

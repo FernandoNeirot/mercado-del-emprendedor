@@ -1,5 +1,4 @@
-import { getStores } from "@/lib/server-actions";
-import { DashboardStoreList } from "@/features/dashboard-tienda";
+import { DashboardStoresWithQuery } from "@/features/dashboard-tienda/components/DashboardStoresWithQuery";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +8,7 @@ export const metadata: Metadata = {
   description: "Gestioná tus tiendas",
 };
 
-export default async function DashboardPage() {
-  const stores = await getStores();
-
+export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -19,9 +16,9 @@ export default async function DashboardPage() {
           Mis tiendas
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
-          Seleccioná una tienda para editarla {stores.length < 2 && "o creá una nueva"}.
+          Seleccioná una tienda para editarla o creá una nueva.
         </p>
-        <DashboardStoreList stores={stores} />
+        <DashboardStoresWithQuery />
       </div>
     </div>
   );
