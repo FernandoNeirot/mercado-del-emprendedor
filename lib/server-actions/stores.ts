@@ -35,6 +35,29 @@ export const getStoreById = cache(async (idOrSlug: string): Promise<StoreVendor 
   }
 });
 
+/** Lista todas las tiendas (público, para home/listado). */
+export async function getAllStores(): Promise<StoreVendor[]> {
+  try {
+    const db = getAdminFirestore();
+    const snapshot = await db
+      .collection("stores")
+      .orderBy("name")
+      .get();
+
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() ?? data.createdAt,
+      } as StoreVendor;
+    });
+  } catch (error) {
+    console.error("[getAllStores] Error:", error);
+    return [];
+  }
+}
+
 /** Lista las tiendas del usuario autenticado (para el dashboard). */
 export async function getStores(): Promise<StoreVendor[]> {
   const user = await getServerUser();

@@ -1,5 +1,6 @@
 export {
   getStoreById,
+  getAllStores,
   getStores,
   createStore,
   updateStore,
