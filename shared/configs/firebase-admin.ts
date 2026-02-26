@@ -2,6 +2,19 @@ import { initializeApp, getApps, cert, type App } from "firebase-admin/app";
 import { getStorage, type Storage } from "firebase-admin/storage";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 
+/**
+ * Convierte literales \n en newlines reales para evitar
+ * OpenSSL "DECODER routines::unsupported" (error:1E08010C).
+ * Orden: \\n (doble escape) → \n, luego \n (literal) → newline real.
+ */
+function normalizePrivateKey(key: string): string {
+  return key
+    .replace(/\\\\n/g, "\\n")
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n");
+}
+
 let adminApp: App;
 let adminStorage: Storage;
 let adminFirestore: Firestore;
@@ -17,11 +30,19 @@ export function initializeAdminApp(): App {
   let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
   // Opción: FIREBASE_SERVICE_ACCOUNT_JSON con el JSON completo (útil en Cloud Run/Secret Manager)
+  // También acepta base64 para evitar problemas de newlines en env vars.
   const jsonKey = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
   if (jsonKey) {
     try {
-      const parsed =
-        typeof jsonKey === "string" ? (JSON.parse(jsonKey) as Record<string, string>) : jsonKey;
+      let raw: string = typeof jsonKey === "string" ? jsonKey : JSON.stringify(jsonKey);
+      if (raw.startsWith("eyJ")) {
+        try {
+          raw = Buffer.from(raw, "base64").toString("utf-8");
+        } catch {
+          /* no es base64 */
+        }
+      }
+      const parsed = JSON.parse(raw) as Record<string, string>;
       projectId = projectId || parsed.project_id;
       clientEmail = clientEmail || parsed.client_email;
       privateKey = parsed.private_key ?? privateKey;
@@ -49,12 +70,8 @@ export function initializeAdminApp(): App {
       }
     }
     // Crítico: en env vars \n suele venir como los 2 caracteres \ y n. OpenSSL necesita newline real.
-    // Orden: \\n (doble escape) → \n, luego \n (literal) → newline real, luego CRLF/CR.
-    privateKey = privateKey
-      .replace(/\\\\n/g, "\\n")
-      .replace(/\\n/g, "\n")
-      .replace(/\r\n/g, "\n")
-      .replace(/\r/g, "\n");
+    // Orden: \\n (doble escape) → \n, luego \n (literal) → newline real. Incluir String.raw-style y CRLF/CR.
+    privateKey = normalizePrivateKey(privateKey);
   }
 
   if (clientEmail && privateKey) {
@@ -69,10 +86,16 @@ export function initializeAdminApp(): App {
       });
       return adminApp;
     } catch (error) {
-      console.error(
-        "[Firebase Admin] Error al inicializar con credenciales:",
-        error
-      );
+      const msg = error instanceof Error ? error.message : String(error);
+      const isDecoderError = /DECODER routines::unsupported|1E08010C|ERR_OSSL_UNSUPPORTED/i.test(msg);
+      console.error("[Firebase Admin] Error al inicializar con credenciales:", error);
+      if (isDecoderError) {
+        throw new Error(
+          "Firebase Admin: la clave privada no pudo decodificarse (DECODER unsupported). " +
+            "Comprueba que FIREBASE_PRIVATE_KEY use newlines reales o que FIREBASE_SERVICE_ACCOUNT_JSON esté bien formado. " +
+            "En muchos hosts debes pegar la clave con saltos de línea reales o usar una variable en base64."
+        );
+      }
       throw new Error(
         "Error al configurar Firebase Admin SDK con las credenciales proporcionadas"
       );
