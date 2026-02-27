@@ -341,7 +341,7 @@ export function ProductEditorView({
                   placeholder="ej. remera-algodon-negra"
                 />
                 <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono break-all">
-                  {`https://mercadodelemprendedor.com.ar/tienda/${store.slug}/producto/${slug.trim() || "tu-texto"}`}
+                  {`${process.env.NEXT_PUBLIC_BASE_URL}/tienda/${store.slug}/producto/${slug.trim() || "tu-texto"}`}
                 </span>
               </label>
 

@@ -143,7 +143,7 @@ export function StoreEditorHeader({
               placeholder="feni-indumentaria-infantil"
             />
             <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-mono break-all">
-              https://mercadodelemprendedor.com.ar/tienda/{form.slug || "tu-slug"}
+              {`${process.env.NEXT_PUBLIC_BASE_URL}/tienda/${form.slug || "tu-slug"}`}
             </span>
           </label>
         </div>
