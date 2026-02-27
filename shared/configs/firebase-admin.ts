@@ -4,15 +4,27 @@ import { getFirestore, type Firestore } from "firebase-admin/firestore";
 
 /**
  * Convierte literales \n en newlines reales para evitar
- * OpenSSL "DECODER routines::unsupported" (error:1E08010C).
+ * OpenSSL "DECODER routines::unsupported" (error:1E08010C) en producción
+ * (p. ej. Cloud Run inyecta env vars y la clave suele llegar mal formateada).
  * Orden: \\n (doble escape) → \n, luego \n (literal) → newline real.
+ * Si la clave PEM viene en una sola línea (newlines eliminados), reintroduce saltos cada 64 chars.
  */
 function normalizePrivateKey(key: string): string {
-  return key
+  let out = key
     .replace(/\\\\n/g, "\\n")
     .replace(/\\n/g, "\n")
     .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n");
+    .replace(/\r/g, "\n")
+    .trim();
+  // En algunos hosts la clave llega sin newlines (una sola línea); OpenSSL necesita PEM con saltos.
+  const begin = "-----BEGIN PRIVATE KEY-----";
+  const end = "-----END PRIVATE KEY-----";
+  if (out.includes(begin) && out.includes(end) && !out.includes("\n")) {
+    const base64 = out.slice(out.indexOf(begin) + begin.length, out.indexOf(end)).replace(/\s/g, "");
+    const lines = base64.match(/.{1,64}/g) || [];
+    out = `${begin}\n${lines.join("\n")}\n${end}`;
+  }
+  return out;
 }
 
 let adminApp: App;
@@ -93,7 +105,7 @@ export function initializeAdminApp(): App {
         throw new Error(
           "Firebase Admin: la clave privada no pudo decodificarse (DECODER unsupported). " +
             "Comprueba que FIREBASE_PRIVATE_KEY use newlines reales o que FIREBASE_SERVICE_ACCOUNT_JSON esté bien formado. " +
-            "En muchos hosts debes pegar la clave con saltos de línea reales o usar una variable en base64."
+            "En Google Cloud (Cloud Run) puedes omitir FIREBASE_PRIVATE_KEY y FIREBASE_CLIENT_EMAIL y usar Application Default Credentials (cuenta de servicio del recurso)."
         );
       }
       throw new Error(
