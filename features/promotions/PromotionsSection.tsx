@@ -60,6 +60,8 @@ const defaultPromotions: Promotion[] = [
 export function PromotionsSection({
   promotions = defaultPromotions,
 }: PromotionsSectionProps) {
+  console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+  console.log("FIREBASE_CLIENT_EMAIL:", process.env.FIREBASE_CLIENT_EMAIL);
   return (
     <section>
       <div className="flex items-center justify-between mb-3 mt-5 sm:mb-4 md:mb-6">
